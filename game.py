@@ -22,3 +22,4 @@ def cut_sprite(sprite, frame_x, frame_y, num_frames, linha_frame):
             frame = sprite.subsurface(cut_frame)
             animation.append(frame)
     return animation
+
