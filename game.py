@@ -42,4 +42,7 @@ linha_frame = 1
 atk_frames = 4
 dead_frames = 3
 
-run_up = cut_sprite(sprite_up, )
+run_up = cut_sprite(sprite_up, frame_x, frame_y, num_frames, linha_frame)
+run_down = cut_sprite(sprite_down, frame_x, frame_y, num_frames, linha_frame)
+run_left = cut_sprite(sprite_left, frame_x, frame_y, num_frames, linha_frame)
+run_right = cut_sprite(sprite_right, frame_x, frame_y, num_frames, linha_frame)
