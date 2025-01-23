@@ -34,7 +34,7 @@ sprite_atk_down = pygame.image.load("")
 sprite_atk_left = pygame.image.load("")
 sprite_atk_right = pygame.image.load("")
 
-#parametros da animação
+#parametros da animação, obs* lembrar de colocar os de ataque
 frame_x = 48
 frame_y = 48
 num_frames = 6
