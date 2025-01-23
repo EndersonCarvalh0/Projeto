@@ -23,3 +23,23 @@ def cut_sprite(sprite, frame_x, frame_y, num_frames, linha_frame):
             animation.append(frame)
     return animation
 
+#Esperando os cortes para colocar as sprites
+sprite_up = pygame.image.load("")
+sprite_down = pygame.image.load("")
+sprite_left = pygame.image.load("")
+sprite_right = pygame.image.load("")
+
+sprite_atk_up = pygame.image.load("")
+sprite_atk_down = pygame.image.load("")
+sprite_atk_left = pygame.image.load("")
+sprite_atk_right = pygame.image.load("")
+
+#parametros da animação
+frame_x = 48
+frame_y = 48
+num_frames = 6
+linha_frame = 1
+atk_frames = 4
+dead_frames = 3
+
+run_up = cut_sprite(sprite_up, )
