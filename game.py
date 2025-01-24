@@ -34,7 +34,7 @@ sprite_atk_down = pygame.image.load("")
 sprite_atk_left = pygame.image.load("")
 sprite_atk_right = pygame.image.load("")
 
-#parametros da animação, obs* lembrar de colocar os de ataque
+#parametros da animação, obs* lembrar de colocar os outros
 frame_x = 48
 frame_y = 48
 num_frames = 6
@@ -46,3 +46,8 @@ run_up = cut_sprite(sprite_up, frame_x, frame_y, num_frames, linha_frame)
 run_down = cut_sprite(sprite_down, frame_x, frame_y, num_frames, linha_frame)
 run_left = cut_sprite(sprite_left, frame_x, frame_y, num_frames, linha_frame)
 run_right = cut_sprite(sprite_right, frame_x, frame_y, num_frames, linha_frame)
+
+atk_up = cut_sprite(sprite_atk_up, frame_x, frame_y, num_frames, linha_frame)
+atk_down = cut_sprite(sprite_atk_down, frame_x, frame_y, num_frames, linha_frame)
+atk_left = cut_sprite(sprite_atk_left, frame_x, frame_y, num_frames, linha_frame)
+atk_right = cut_sprite(sprite_atk_right, frame_x, frame_y, num_frames, linha_frame)
