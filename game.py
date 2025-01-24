@@ -51,3 +51,16 @@ atk_up = cut_sprite(sprite_atk_up, frame_x, frame_y, num_frames, linha_frame)
 atk_down = cut_sprite(sprite_atk_down, frame_x, frame_y, num_frames, linha_frame)
 atk_left = cut_sprite(sprite_atk_left, frame_x, frame_y, num_frames, linha_frame)
 atk_right = cut_sprite(sprite_atk_right, frame_x, frame_y, num_frames, linha_frame)
+
+#loop principal, atualizar sempre
+running =  True
+while running:
+    tela.fill(WHITE)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    pygame.display.flip()
+
+pygame.quit()
+sys.exit()
