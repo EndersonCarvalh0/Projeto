@@ -34,6 +34,8 @@ sprite_atk_down = pygame.image.load("")
 sprite_atk_left = pygame.image.load("")
 sprite_atk_right = pygame.image.load("")
 
+sprite_dead = pygame.image.load("")
+
 #parametros da animação, obs* lembrar de colocar os outros
 frame_x = 48
 frame_y = 48
@@ -51,6 +53,8 @@ atk_up = cut_sprite(sprite_atk_up, frame_x, frame_y, num_frames, linha_frame)
 atk_down = cut_sprite(sprite_atk_down, frame_x, frame_y, num_frames, linha_frame)
 atk_left = cut_sprite(sprite_atk_left, frame_x, frame_y, num_frames, linha_frame)
 atk_right = cut_sprite(sprite_atk_right, frame_x, frame_y, num_frames, linha_frame)
+
+death = cut_sprite(sprite_dead, frame_x, frame_y, num_frames, linha_frame)
 
 #loop principal, atualizar sempre
 running =  True
