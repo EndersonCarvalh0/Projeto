@@ -56,6 +56,17 @@ atk_right = cut_sprite(sprite_atk_right, frame_x, frame_y, num_frames, linha_fra
 
 death = cut_sprite(sprite_dead, frame_x, frame_y, num_frames, linha_frame)
 
+#faltam alguns parâmetros, atualizar conforme faz
+pframe = 0
+frame_time = 100
+
+#desenhar a sprite
+def play_animation(x, y, anime):
+    if pframe < len(anime):
+        tela.blit(anime[pframe], (x, y))
+    else:
+        tela.blit(anime[0], (x, y))
+
 #loop principal, atualizar sempre
 running =  True
 while running:
