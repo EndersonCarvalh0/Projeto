@@ -36,6 +36,14 @@ sprite_atk_right = pygame.image.load("")
 
 sprite_dead = pygame.image.load("")
 
+#Sprite Slime
+sprite_up_slime = pygame.image.load("")
+sprite_down_slime = pygame.image.load("")
+sprite_left_slime = pygame.image.load("")
+sprite_right_slime = pygame.image.load("")
+
+sprite_dead_slime = pygame.image.load("")
+
 #parametros da animação, obs* lembrar de colocar os outros
 frame_x = 48
 frame_y = 48
@@ -75,7 +83,11 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+    keys = pygame.key.get_pressed()
+
+
     pygame.display.flip()
+    
 
 pygame.quit()
 sys.exit()
