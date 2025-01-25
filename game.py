@@ -39,10 +39,12 @@ sright = pygame.image.load('Sprites/paradol.png')
 death_player = pygame.image.load("Sprites/death.png")
 
 
-slime_up = pygame.image.load('Sprites/andandoc (1).png')
-slime_down = pygame.image.load('Sprites/andandof (1).png')
-slime_left = pygame.image.load('Sprites/andandole (2).png')
-slime_right = pygame.image.load('Sprites/andandol (1).png')
+slime_up = pygame.image.load('Sprites/slimec.png')
+slime_down = pygame.image.load('Sprites/slimef.png')
+slime_left = pygame.image.load('Sprites/slimele.png')
+slime_right = pygame.image.load('Sprites/slimel.png')
+
+death_slime = pygame.image.load("Sprites/slimedeath.png")
 
 frame_x = 48
 frame_y = 58
@@ -52,6 +54,7 @@ num_frames = 6
 num_rows = 1
 atk_frames = 4
 stand_frames = 6
+death_player_frames = 3
 
 player_run_up = cut_sprite(run_up, frame_x, frame_y, num_frames, num_rows)
 player_run_down = cut_sprite(run_down, frame_x, frame_y, num_frames, num_rows)
@@ -68,8 +71,7 @@ player_stand_down_frames = cut_sprite(sdown, frame_x, frame_y, stand_frames, num
 player_stand_left_frames = cut_sprite(sleft, frame_x, frame_y, stand_frames, num_rows)
 player_stand_right_frames = cut_sprite(sright, frame_x, frame_y, stand_frames, num_rows)
 
-player_death = cut_sprite(death_player, frame_x, frame_dead_y, stand_frames, num_rows)
-
+player_death = cut_sprite(death_player, frame_x, frame_dead_y, death_player_frames, num_rows)
 
 if not (player_run_up and player_run_left and player_run_down and player_run_right):
     print("Erro: Nenhum quadro foi cortado das sprite sheets.")
@@ -196,4 +198,3 @@ while running:
 
 pygame.quit()
 sys.exit()
-
