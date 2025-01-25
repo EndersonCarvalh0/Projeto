@@ -36,8 +36,17 @@ sdown = pygame.image.load('Sprites/paradof.png')
 sleft = pygame.image.load('Sprites/paradole.png')
 sright = pygame.image.load('Sprites/paradol.png')
 
+death_player = pygame.image.load("Sprites/death.png")
+
+
+slime_up = pygame.image.load('Sprites/andandoc (1).png')
+slime_down = pygame.image.load('Sprites/andandof (1).png')
+slime_left = pygame.image.load('Sprites/andandole (2).png')
+slime_right = pygame.image.load('Sprites/andandol (1).png')
+
 frame_x = 48
 frame_y = 58
+frame_dead_y = 32
 
 num_frames = 6 
 num_rows = 1
@@ -58,6 +67,9 @@ player_stand_up_frames = cut_sprite(sup, frame_x, frame_y, stand_frames, num_row
 player_stand_down_frames = cut_sprite(sdown, frame_x, frame_y, stand_frames, num_rows)
 player_stand_left_frames = cut_sprite(sleft, frame_x, frame_y, stand_frames, num_rows)
 player_stand_right_frames = cut_sprite(sright, frame_x, frame_y, stand_frames, num_rows)
+
+player_death = cut_sprite(death_player, frame_x, frame_dead_y, stand_frames, num_rows)
+
 
 if not (player_run_up and player_run_left and player_run_down and player_run_right):
     print("Erro: Nenhum quadro foi cortado das sprite sheets.")
@@ -81,9 +93,8 @@ is_attacking = False
 atk_frame_time = 100
 last_attack_time = pygame.time.get_ticks()
 
-# Função para inverter a sequência de quadros
 def reverse_animation(frames):
-    return frames[::-1]  # Inverte a lista de frames
+    return frames[::-1]
 
 def draw_player(x, y, animation_frames):
     if current_frame < len(animation_frames):
@@ -103,19 +114,19 @@ while running:
     keys = pygame.key.get_pressed()
 
     moving = False
-    if keys[pygame.K_a]:  # Movimento para a esquerda
+    if keys[pygame.K_a]:
         player_x -= player_speed
         last_direction = 'left'
         moving = True
-    elif keys[pygame.K_d]:  # Movimento para a direita
+    elif keys[pygame.K_d]:
         player_x += player_speed
         last_direction = 'right'
         moving = True
-    elif keys[pygame.K_s]:  # Movimento para baixo
+    elif keys[pygame.K_s]:
         player_y += player_speed
         last_direction = 'down'
         moving = True
-    elif keys[pygame.K_w]:  # Movimento para cima
+    elif keys[pygame.K_w]:
         player_y -= player_speed
         last_direction = 'up'
         moving = True
@@ -185,3 +196,4 @@ while running:
 
 pygame.quit()
 sys.exit()
+
