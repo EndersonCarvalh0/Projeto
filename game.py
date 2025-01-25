@@ -24,6 +24,11 @@ def cut_sprite(sprite, frame_x, frame_y, num_frames, linha_frame):
     return animation
 
 #Esperando os cortes para colocar as sprites
+sprite_sup = pygame.image.load("")
+sprite_sdown = pygame.image.load("")
+sprite_sleft = pygame.image.load("")
+sprite_sright = pygame.image.load("")
+
 sprite_up = pygame.image.load("")
 sprite_down = pygame.image.load("")
 sprite_left = pygame.image.load("")
@@ -52,6 +57,11 @@ linha_frame = 1
 atk_frames = 4
 dead_frames = 3
 
+stop_up = cut_sprite(sprite_sup, frame_x, frame_y, num_frames, linha_frame)
+stop_down = cut_sprite(sprite_sdown, frame_x, frame_y, num_frames, linha_frame)
+stop_left = cut_sprite(sprite_sleft, frame_x, frame_y, num_frames, linha_frame)
+stop_right = cut_sprite(sprite_sright, frame_x, frame_y, num_frames, linha_frame)
+
 run_up = cut_sprite(sprite_up, frame_x, frame_y, num_frames, linha_frame)
 run_down = cut_sprite(sprite_down, frame_x, frame_y, num_frames, linha_frame)
 run_left = cut_sprite(sprite_left, frame_x, frame_y, num_frames, linha_frame)
@@ -67,6 +77,12 @@ death = cut_sprite(sprite_dead, frame_x, frame_y, num_frames, linha_frame)
 #faltam alguns parâmetros, atualizar conforme faz
 pframe = 0
 frame_time = 100
+last_frame_time = pygame.time.get_ticks()
+
+last_direction = None
+is_atk = False
+atk_frame_time = 100
+last_atk_time = pygame.time.get_ticks()
 
 player_alt = 50
 player_larg = 50
@@ -109,6 +125,7 @@ while running:
         player_y -= player_speed
         last_direction = 'up'
         moving = True
+
 
     pygame.display.flip()
     
