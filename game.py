@@ -68,6 +68,13 @@ death = cut_sprite(sprite_dead, frame_x, frame_y, num_frames, linha_frame)
 pframe = 0
 frame_time = 100
 
+player_alt = 50
+player_larg = 50
+player_speed = 2
+
+player_x = (alt_tela - larg_tela) // 2
+player_y = (alt_tela - larg_tela) // 2
+
 #desenhar a sprite
 def play_animation(x, y, anime):
     if pframe < len(anime):
@@ -76,6 +83,7 @@ def play_animation(x, y, anime):
         tela.blit(anime[0], (x, y))
 
 #loop principal, atualizar sempre
+clock = pygame.time.Clock()
 running =  True
 while running:
     tela.fill(WHITE)
@@ -84,7 +92,23 @@ while running:
             running = False
 
     keys = pygame.key.get_pressed()
-
+    moving = False
+    if keys[pygame.K_a]:
+        player_x -= player_speed
+        last_direction = 'left'
+        moving = True
+    elif keys[pygame.K_d]:
+        player_x += player_speed
+        last_direction = 'right'
+        moving = True
+    elif keys[pygame.K_s]:
+        player_y += player_speed
+        last_direction = 'down'
+        moving = True
+    elif keys[pygame.K_w]:
+        player_y -= player_speed
+        last_direction = 'up'
+        moving = True
 
     pygame.display.flip()
     
