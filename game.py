@@ -49,7 +49,7 @@ pslime_right = pygame.image.load('Sprites/pslimel.png')
 
 death_slime = pygame.image.load("Sprites/slimedeath.png")
 
-# Cortando os sprites
+
 frame_x = 48
 frame_y = 58
 frame_dead_y = 32
@@ -65,30 +65,45 @@ slime_frames = 6
 death_slime_frames = 5
 stand_slime_frames = 4
 
-# Carregar animações
+
 player_run_up = cut_sprite(run_up, frame_x, frame_y, num_frames, num_rows)
 player_run_down = cut_sprite(run_down, frame_x, frame_y, num_frames, num_rows)
 player_run_left = cut_sprite(run_left, frame_x, frame_y, num_frames, num_rows)
-player_run_right = cut_sprite(run_right, frame_x, frame_y, num_frames, num_rows)
+player_run_right = cut_sprite(
+    run_right, frame_x, frame_y, num_frames, num_rows)
 
-player_stand_up_frames = cut_sprite(sup, frame_x, frame_y, stand_frames, num_rows)
-player_stand_down_frames = cut_sprite(sdown, frame_x, frame_y, stand_frames, num_rows)
-player_stand_left_frames = cut_sprite(sleft, frame_x, frame_y, stand_frames, num_rows)
-player_stand_right_frames = cut_sprite(sright, frame_x, frame_y, stand_frames, num_rows)
+player_stand_up_frames = cut_sprite(
+    sup, frame_x, frame_y, stand_frames, num_rows)
+player_stand_down_frames = cut_sprite(
+    sdown, frame_x, frame_y, stand_frames, num_rows)
+player_stand_left_frames = cut_sprite(
+    sleft, frame_x, frame_y, stand_frames, num_rows)
+player_stand_right_frames = cut_sprite(
+    sright, frame_x, frame_y, stand_frames, num_rows)
 
-player_death = cut_sprite(death_player, frame_x,frame_dead_y, death_player_frames, num_rows)
+player_death = cut_sprite(death_player, frame_x,
+                          frame_dead_y, death_player_frames, num_rows)
 
-slime_run_up = cut_sprite(slime_up, frame_x_slime,frame_y_slime, slime_frames, num_rows)
-slime_run_down = cut_sprite(slime_down, frame_x_slime, frame_y_slime, slime_frames, num_rows)
-slime_run_left = cut_sprite(slime_left, frame_x_slime, frame_y_slime, slime_frames, num_rows)
-slime_run_right = cut_sprite(slime_right, frame_x_slime, frame_y_slime, slime_frames, num_rows)
+slime_run_up = cut_sprite(slime_up, frame_x_slime,
+                          frame_y_slime, slime_frames, num_rows)
+slime_run_down = cut_sprite(
+    slime_down, frame_x_slime, frame_y_slime, slime_frames, num_rows)
+slime_run_left = cut_sprite(
+    slime_left, frame_x_slime, frame_y_slime, slime_frames, num_rows)
+slime_run_right = cut_sprite(
+    slime_right, frame_x_slime, frame_y_slime, slime_frames, num_rows)
 
-slime_stand_up = cut_sprite(pslime_up, frame_x_slime, frame_y_slime, stand_slime_frames, num_rows)
-slime_stand_down = cut_sprite(pslime_down, frame_x_slime, frame_y_slime, stand_slime_frames, num_rows)
-slime_stand_left = cut_sprite(pslime_left, frame_x_slime, frame_y_slime, stand_slime_frames, num_rows)
-slime_stand_right = cut_sprite(pslime_right, frame_x_slime, frame_y_slime, stand_slime_frames, num_rows)
+slime_stand_up = cut_sprite(
+    pslime_up, frame_x_slime, frame_y_slime, stand_slime_frames, num_rows)
+slime_stand_down = cut_sprite(
+    pslime_down, frame_x_slime, frame_y_slime, stand_slime_frames, num_rows)
+slime_stand_left = cut_sprite(
+    pslime_left, frame_x_slime, frame_y_slime, stand_slime_frames, num_rows)
+slime_stand_right = cut_sprite(
+    pslime_right, frame_x_slime, frame_y_slime, stand_slime_frames, num_rows)
 
-slime_death = cut_sprite(death_slime, frame_x_slime, frame_y_slime, death_slime_frames, num_rows)
+slime_death = cut_sprite(death_slime, frame_x_slime,
+                         frame_y_slime, death_slime_frames, num_rows)
 
 player_larg = 16
 player_alt = 16
@@ -105,6 +120,7 @@ slime_alt = 16
 slime_x = 100
 slime_y = 100
 slime_speed = 1
+slime_speed_berserk = 2
 
 slime_direction = random.choice(['up', 'down', 'left', 'right'])
 slime_steps = 0
@@ -113,7 +129,7 @@ min_steps = 10
 pause_duration = randint(500, 3000)
 last_change_time = 0
 is_paused = False
-is_chasing = False
+is_berserk = False
 slime_death_animation_playing = False
 slime_death_animation_start_time = 0
 slime_death_animation_duration = 1000
@@ -123,9 +139,10 @@ def reverse_animation(frames):
     return frames[::-1]
 
 
-def is_player_in_sight():
+def is_player_berserk():
     slime_hitbox = get_slime_hitbox()
-    player_hitbox = pygame.Rect(player_x + 17, player_y + 22, player_larg, player_alt)
+    player_hitbox = pygame.Rect(
+        player_x + 17, player_y + 22, player_larg, player_alt)
     return slime_hitbox.colliderect(player_hitbox)
 
 
@@ -142,23 +159,24 @@ def draw_slime(x, y, animation_frames):
     else:
         tela.blit(animation_frames[0], (x, y))
 
+
 chase_start_time = 0
 chase_duration = 10000
 
 
 def move_slime():
-    global slime_x, slime_y, slime_direction, slime_steps, last_change_time, is_paused, player_x, player_y, is_chasing, chase_start_time
+    global slime_x, slime_y, slime_direction, slime_steps, last_change_time, is_paused, player_x, player_y, is_berserk, chase_start_time
 
-    if is_player_in_sight():
-        if not is_chasing:
+    if is_player_berserk():
+        if not is_berserk:
             chase_start_time = pygame.time.get_ticks()
-        is_chasing = True
+        is_berserk = True
 
-    if is_chasing:
+    if is_berserk:
         if pygame.time.get_ticks() - chase_start_time > chase_duration:
-            is_chasing = False
+            is_berserk = False
         else:
-            chase_player()
+            berserk()
             return
 
     if slime_steps >= max_steps:
@@ -197,13 +215,12 @@ def get_slime_hitbox():
 
 
 def get_slime_body_hitbox():
-
     hitbox_width = 16
     hitbox_height = 16
     return pygame.Rect(slime_x + (frame_x_slime - hitbox_width) // 2,  slime_y + (frame_y_slime - hitbox_height) // 2, hitbox_width, hitbox_height)
 
 
-def chase_player():
+def berserk():
     global slime_x, slime_y, player_x, player_y, slime_direction
 
     if slime_x < player_x:
@@ -225,8 +242,10 @@ def chase_player():
     elif slime_direction == 'right':
         slime_x += slime_speed
 
+
 player_alive = True
 slime_alive = True
+
 
 def is_player_behind_slime():
     global player_x, player_y, slime_x, slime_y, slime_direction
@@ -273,13 +292,13 @@ def draw_hitboxes():
             game_over()
 
 
-
 def play_slime_death_animation(x, y):
     for frame in slime_death:
         tela.fill(BLACK)
         tela.blit(frame, (x, y))
         pygame.display.flip()
         pygame.time.wait(1000)
+
 
 def game_over():
     font = pygame.font.SysFont(None, 74)
@@ -386,7 +405,6 @@ while running:
         slime_death_animation_playing = True
         slime_death_animation_start_time = pygame.time.get_ticks()
         slime_alive = False
-
 
     if slime_death_animation_playing:
         elapsed_time = pygame.time.get_ticks() - slime_death_animation_start_time
