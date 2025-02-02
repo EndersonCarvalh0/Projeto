@@ -165,7 +165,10 @@ chase_duration = 10000
 
 
 def move_slime():
-    global slime_x, slime_y, slime_direction, slime_steps, last_change_time, is_paused, player_x, player_y, is_berserk, chase_start_time
+    global slime_x, slime_y, slime_direction, slime_steps, last_change_time, is_paused, player_x, player_y, is_berserk, chase_start_time, slime_alive
+
+    if not slime_alive:
+        return
 
     if is_player_berserk():
         if not is_berserk:
@@ -271,19 +274,20 @@ def draw_hitboxes():
     slime_hitbox = get_slime_hitbox()
     slime_body_hitbox = get_slime_body_hitbox()
     player_hitbox = get_player_hitbox()
-    pygame.draw.rect(tela, (255, 0, 0), player_hitbox, 2)
     if slime_alive:
+        slime_hitbox = get_slime_hitbox()
+        slime_body_hitbox = get_slime_body_hitbox()
         pygame.draw.rect(tela, (0, 255, 0), slime_hitbox, 2)
         pygame.draw.rect(tela, (0, 0, 255), slime_body_hitbox, 2)
-    if slime_body_hitbox.colliderect(player_hitbox):
-        if is_player_behind_slime():
-            print("Slime foi morta pelo jogador!")
-            slime_alive = False
-        else:
-            print("Jogador foi pego pela slime!")
-            game_over()
-
-
+        
+        if slime_body_hitbox.colliderect(player_hitbox):
+            if is_player_behind_slime():
+                print("Slime foi morta pelo jogador!")
+                slime_alive = False
+            else:
+                print("Jogador foi pego pela slime!")
+                game_over()
+    pygame.draw.rect(tela, (255, 0, 0), player_hitbox, 2)
 
 def play_slime_death_animation(x, y):
     for frame in slime_death:
@@ -402,8 +406,7 @@ while running:
     if slime_death_animation_playing:
         elapsed_time = pygame.time.get_ticks() - slime_death_animation_start_time
         if elapsed_time < slime_death_animation_duration:
-            frame_index = int(
-                (elapsed_time / slime_death_animation_duration) * len(slime_death))
+            frame_index = int((elapsed_time / slime_death_animation_duration) * len(slime_death))
             if frame_index >= len(slime_death):
                 frame_index = len(slime_death) - 1
             tela.blit(slime_death[frame_index], (slime_x, slime_y))
