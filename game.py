@@ -283,13 +283,6 @@ def draw_hitboxes():
             print("Jogador foi pego pela slime!")
             game_over()
 
-    if slime_body_hitbox.colliderect(player_hitbox):
-        if is_player_behind_slime():
-            print("Slime foi morta pelo jogador!")
-            slime_alive = False
-        else:
-            print("Jogador foi pego pela slime!")
-            game_over()
 
 
 def play_slime_death_animation(x, y):
