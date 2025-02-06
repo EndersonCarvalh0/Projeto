@@ -4,6 +4,7 @@ import sys
 import random
 from random import randint
 
+
 pygame.init()
 pygame.display.set_caption("Mata os Slimes, Cleitin!")
 
@@ -11,7 +12,6 @@ larg_tela = 800
 alt_tela = 600
 tela = pygame.display.set_mode((larg_tela, alt_tela))
 BLACK = (0, 0, 0)
-
 
 def cut_sprite(sprite, frame_x, frame_y, num_frames, num_rows):
     animation = []
@@ -23,6 +23,10 @@ def cut_sprite(sprite, frame_x, frame_y, num_frames, num_rows):
             frame = sprite.subsurface(frame_rect)
             animation.append(frame)
     return animation
+
+
+def reverse_animation(frames):
+    return frames[::-1]
 
 
 run_up = pygame.image.load('Sprites/andandoc (1).png')
@@ -83,7 +87,6 @@ player_stand_right_frames = cut_sprite(
 
 player_death = cut_sprite(death_player, frame_x,
                           frame_dead_y, death_player_frames, num_rows)
-
 slime_run_up = cut_sprite(slime_up, frame_x_slime,
                           frame_y_slime, slime_frames, num_rows)
 slime_run_down = cut_sprite(
@@ -105,6 +108,7 @@ slime_stand_right = cut_sprite(
 slime_death = cut_sprite(death_slime, frame_x_slime,
                          frame_y_slime, death_slime_frames, num_rows)
 
+
 player_larg = 16
 player_alt = 16
 player_x = (larg_tela - player_larg) // 2
@@ -115,35 +119,128 @@ frame_time = 100
 last_frame_time = pygame.time.get_ticks()
 
 last_direction = None
-slime_larg = 16
-slime_alt = 16
-slime_x = 100
-slime_y = 100
-slime_speed = 1
-slime_speed_berserk = 2
-
-slime_direction = random.choice(['up', 'down', 'left', 'right'])
-slime_steps = 0
-max_steps = 50
-min_steps = 10
-pause_duration = randint(500, 3000)
-last_change_time = 0
-is_paused = False
-is_berserk = False
-slime_death_animation_playing = False
-slime_death_animation_start_time = 0
-slime_death_animation_duration = 1000
 
 
-def reverse_animation(frames):
-    return frames[::-1]
+player_alive = True
+slime_alive = True
 
 
-def is_player_berserk():
-    slime_hitbox = get_slime_hitbox()
-    player_hitbox = pygame.Rect(
-        player_x + 17, player_y + 22, player_larg, player_alt)
-    return slime_hitbox.colliderect(player_hitbox)
+class Slime:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.direction = random.choice(['up', 'down', 'left', 'right'])
+        self.steps = 0
+        self.max_steps = 100
+        self.min_steps = 25
+        self.pause_duration = randint(500, 3000)
+        self.last_change_time = 0
+        self.is_paused = False
+        self.is_berserk = False
+        self.death_animation_playing = False
+        self.death_animation_start_time = 0
+        self.death_animation_duration = 750
+        self.alive = True
+
+    def move(self):
+        global player_x, player_y
+
+        if not self.alive:
+            return
+
+        player_hitbox = get_player_hitbox()
+        vision_hitbox = self.get_hitbox()
+        if vision_hitbox.colliderect(player_hitbox):
+            self.is_berserk = True
+
+        if self.is_berserk:
+            self.berserk()
+            return
+
+        if self.steps >= self.max_steps:
+            self.is_paused = True
+            self.steps = 0
+            self.last_change_time = pygame.time.get_ticks()
+
+        if self.is_paused:
+            if pygame.time.get_ticks() - self.last_change_time >= self.pause_duration:
+                self.direction = random.choice(['up', 'down', 'left', 'right'])
+                self.is_paused = False
+            else:
+                return
+
+        if self.direction == 'up':
+            self.y -= 1
+        elif self.direction == 'down':
+            self.y += 1
+        elif self.direction == 'left':
+            self.x -= 1
+        elif self.direction == 'right':
+            self.x += 1
+
+        self.steps += 1
+
+    def berserk(self):
+        global player_x, player_y
+
+        if self.x < player_x:
+            self.direction = 'right'
+        elif self.x > player_x:
+            self.direction = 'left'
+
+        if self.y < player_y:
+            self.direction = 'down'
+        elif self.y > player_y:
+            self.direction = 'up'
+
+        if self.direction == 'up':
+            self.y -= 2
+        elif self.direction == 'down':
+            self.y += 2
+        elif self.direction == 'left':
+            self.x -= 2
+        elif self.direction == 'right':
+            self.x += 2
+
+    def get_hitbox(self):
+        if self.direction == 'up':
+            return pygame.Rect(self.x + 8, self.y - 28, 16, 40)
+        elif self.direction == 'down':
+            return pygame.Rect(self.x + 8, self.y + 26, 16, 40)
+        elif self.direction == 'left':
+            return pygame.Rect(self.x - 31, self.y + 11, 40, 16)
+        elif self.direction == 'right':
+            return pygame.Rect(self.x + 23, self.y + 11, 40, 16)
+
+    def get_body_hitbox(self):
+        hitbox_width = 16
+        hitbox_height = 16
+        return pygame.Rect(self.x + (frame_x_slime - hitbox_width) // 2, self.y + (frame_y_slime - hitbox_height) // 2, hitbox_width, hitbox_height)
+
+    def draw(self):
+        if self.alive:
+            if self.direction == 'up':
+                draw_slime(self.x, self.y, slime_run_up)
+            elif self.direction == 'down':
+                draw_slime(self.x, self.y, slime_run_down)
+            elif self.direction == 'left':
+                draw_slime(self.x, self.y, slime_run_left)
+            elif self.direction == 'right':
+                draw_slime(self.x, self.y, slime_run_right)
+        elif self.death_animation_playing:
+            elapsed_time = pygame.time.get_ticks() - self.death_animation_start_time
+            if elapsed_time < self.death_animation_duration:
+                frame_index = int(
+                    (elapsed_time / self.death_animation_duration) * len(slime_death))
+                if frame_index >= len(slime_death):
+                    frame_index = len(slime_death) - 1
+                tela.blit(slime_death[frame_index], (self.x, self.y))
+            else:
+                self.death_animation_playing = False
+
+    def play_death_animation(self):
+        self.death_animation_playing = True
+        self.death_animation_start_time = pygame.time.get_ticks()
 
 
 def draw_player(x, y, animation_frames):
@@ -160,141 +257,41 @@ def draw_slime(x, y, animation_frames):
         tela.blit(animation_frames[0], (x, y))
 
 
-chase_start_time = 0
-chase_duration = 10000
-
-
-def move_slime():
-    global slime_x, slime_y, slime_direction, slime_steps, last_change_time, is_paused, player_x, player_y, is_berserk, chase_start_time, slime_alive
-
-    if not slime_alive:
-        return
-
-    if is_player_berserk():
-        if not is_berserk:
-            chase_start_time = pygame.time.get_ticks()
-        is_berserk = True
-
-    if is_berserk:
-        if pygame.time.get_ticks() - chase_start_time > chase_duration:
-            is_berserk = False
-        else:
-            berserk()
-            return
-
-    if slime_steps >= max_steps:
-        is_paused = True
-        slime_steps = 0
-        last_change_time = pygame.time.get_ticks()
-
-    if is_paused:
-        if pygame.time.get_ticks() - last_change_time >= pause_duration:
-            slime_direction = random.choice(['up', 'down', 'left', 'right'])
-            is_paused = False
-        else:
-            return
-
-    if slime_direction == 'up':
-        slime_y -= slime_speed
-    elif slime_direction == 'down':
-        slime_y += slime_speed
-    elif slime_direction == 'left':
-        slime_x -= slime_speed
-    elif slime_direction == 'right':
-        slime_x += slime_speed
-
-    slime_steps += 1
-
-
-def get_slime_hitbox():
-    if slime_direction == 'up':
-        return pygame.Rect(slime_x + 8, slime_y - 28, 16, 40)
-    elif slime_direction == 'down':
-        return pygame.Rect(slime_x + 8, slime_y + 26, 16, 40)
-    elif slime_direction == 'left':
-        return pygame.Rect(slime_x - 31, slime_y + 11, 40, 16)
-    elif slime_direction == 'right':
-        return pygame.Rect(slime_x + 23, slime_y + 11, 40, 16)
-
-
-def get_slime_body_hitbox():
-    hitbox_width = 16
-    hitbox_height = 16
-    return pygame.Rect(slime_x + (frame_x_slime - hitbox_width) // 2,  slime_y + (frame_y_slime - hitbox_height) // 2, hitbox_width, hitbox_height)
-
-
-def berserk():
-    global slime_x, slime_y, player_x, player_y, slime_direction
-
-    if slime_x < player_x:
-        slime_direction = 'right'
-    elif slime_x > player_x:
-        slime_direction = 'left'
-
-    if slime_y < player_y:
-        slime_direction = 'down'
-    elif slime_y > player_y:
-        slime_direction = 'up'
-
-    if slime_direction == 'up':
-        slime_y -= slime_speed
-    elif slime_direction == 'down':
-        slime_y += slime_speed
-    elif slime_direction == 'left':
-        slime_x -= slime_speed
-    elif slime_direction == 'right':
-        slime_x += slime_speed
-
-
-player_alive = True
-slime_alive = True
-
-
-def is_player_behind_slime():
-    global player_x, player_y, slime_x, slime_y, slime_direction
-
-    if slime_direction == 'up':
-        return player_y > slime_y
-    elif slime_direction == 'down':
-        return player_y < slime_y
-    elif slime_direction == 'left':
-        return player_x > slime_x
-    elif slime_direction == 'right':
-        return player_x < slime_x
-
-
 def get_player_hitbox():
     hitbox_width = 16
     hitbox_height = 16
     return pygame.Rect(player_x + 17, player_y + 22, hitbox_width, hitbox_height)
 
 
-def draw_hitboxes():
+def draw_hitboxes(slimes):
     global player_alive, slime_alive
-    slime_hitbox = get_slime_hitbox()
-    slime_body_hitbox = get_slime_body_hitbox()
     player_hitbox = get_player_hitbox()
-    if slime_alive:
-        slime_hitbox = get_slime_hitbox()
-        slime_body_hitbox = get_slime_body_hitbox()
-        pygame.draw.rect(tela, (0, 255, 0), slime_hitbox, 2)
-        pygame.draw.rect(tela, (0, 0, 255), slime_body_hitbox, 2)
-        
-        if slime_body_hitbox.colliderect(player_hitbox):
-            if is_player_behind_slime():
-                print("Slime foi morta pelo jogador!")
-                slime_alive = False
-            else:
-                print("Jogador foi pego pela slime!")
-                game_over()
+
     pygame.draw.rect(tela, (255, 0, 0), player_hitbox, 2)
 
-def play_slime_death_animation(x, y):
-    for frame in slime_death:
-        tela.fill(BLACK)
-        tela.blit(frame, (x, y))
-        pygame.display.flip()
-        pygame.time.wait(1000)
+    for slime in slimes:
+        if slime.alive:
+            vision_hitbox = slime.get_hitbox()
+            slime_body_hitbox = slime.get_body_hitbox()
+
+            pygame.draw.rect(tela, (0, 255, 0), vision_hitbox, 2)
+            pygame.draw.rect(tela, (0, 0, 255), slime_body_hitbox, 2)
+            if slime_body_hitbox.colliderect(player_hitbox):
+                print("Jogador foi pego pela slime!")
+                game_over()
+
+
+def is_player_behind_slime(slime):
+    global player_x, player_y
+
+    if slime.direction == 'up':
+        return player_y > slime.y
+    elif slime.direction == 'down':
+        return player_y < slime.y
+    elif slime.direction == 'left':
+        return player_x > slime.x
+    elif slime.direction == 'right':
+        return player_x < slime.x
 
 
 def game_over():
@@ -309,6 +306,8 @@ def game_over():
 
 
 clock = pygame.time.Clock()
+slimes = [Slime(100, 100)]
+last_slime_spawn_time = pygame.time.get_ticks()
 running = True
 while running:
     tela.fill(BLACK)
@@ -324,21 +323,18 @@ while running:
         player_x -= player_speed
         last_direction = 'left'
         moving = True
-    elif keys[pygame.K_d]:
+    if keys[pygame.K_d]:
         player_x += player_speed
         last_direction = 'right'
         moving = True
-    elif keys[pygame.K_s]:
+    if keys[pygame.K_s]:
         player_y += player_speed
         last_direction = 'down'
         moving = True
-    elif keys[pygame.K_w]:
+    if keys[pygame.K_w]:
         player_y -= player_speed
         last_direction = 'up'
         moving = True
-
-    player_hitbox = get_player_hitbox()
-    slime_hitbox = pygame.Rect(slime_x, slime_y, slime_larg, slime_alt)
 
     if moving:
         if last_direction == 'left':
@@ -346,25 +342,21 @@ while running:
                 last_frame_time = pygame.time.get_ticks()
                 current_frame = (current_frame + 1) % len(player_run_left)
             draw_player(player_x, player_y, reverse_animation(player_run_left))
-
         elif last_direction == 'right':
             if pygame.time.get_ticks() - last_frame_time > frame_time:
                 last_frame_time = pygame.time.get_ticks()
                 current_frame = (current_frame + 1) % len(player_run_right)
             draw_player(player_x, player_y, player_run_right)
-
         elif last_direction == 'down':
             if pygame.time.get_ticks() - last_frame_time > frame_time:
                 last_frame_time = pygame.time.get_ticks()
                 current_frame = (current_frame + 1) % len(player_run_down)
             draw_player(player_x, player_y, player_run_down)
-
         elif last_direction == 'up':
             if pygame.time.get_ticks() - last_frame_time > frame_time:
                 last_frame_time = pygame.time.get_ticks()
                 current_frame = (current_frame + 1) % len(player_run_up)
             draw_player(player_x, player_y, player_run_up)
-
     else:
         if pygame.time.get_ticks() - last_frame_time > frame_time:
             last_frame_time = pygame.time.get_ticks()
@@ -383,35 +375,24 @@ while running:
             tela.blit(
                 player_stand_right_frames[current_frame], (player_x, player_y))
 
-    if slime_alive:
-        move_slime()
+    for slime in slimes[:]:
+        slime.move()
+        slime.draw()
 
-        if slime_direction == 'up':
-            draw_slime(slime_x, slime_y, slime_run_up)
-        elif slime_direction == 'down':
-            draw_slime(slime_x, slime_y, slime_run_down)
-        elif slime_direction == 'left':
-            draw_slime(slime_x, slime_y, slime_run_left)
-        elif slime_direction == 'right':
-            draw_slime(slime_x, slime_y, slime_run_right)
+        if is_player_behind_slime(slime) and slime.get_body_hitbox().colliderect(get_player_hitbox()):
+            print("Slime foi morta pelo jogador!")
+            slime.play_death_animation()
+            slime.alive = False
 
-    draw_hitboxes()
+        if not slime.alive and not slime.death_animation_playing:
+            slimes.remove(slime)
 
-    if slime_alive and is_player_behind_slime() and get_slime_body_hitbox().colliderect(player_hitbox):
-        print("Slime foi morta pelo jogador!")
-        slime_death_animation_playing = True
-        slime_death_animation_start_time = pygame.time.get_ticks()
-        slime_alive = False
+    draw_hitboxes(slimes)
 
-    if slime_death_animation_playing:
-        elapsed_time = pygame.time.get_ticks() - slime_death_animation_start_time
-        if elapsed_time < slime_death_animation_duration:
-            frame_index = int((elapsed_time / slime_death_animation_duration) * len(slime_death))
-            if frame_index >= len(slime_death):
-                frame_index = len(slime_death) - 1
-            tela.blit(slime_death[frame_index], (slime_x, slime_y))
-        else:
-            slime_death_animation_playing = False
+    if pygame.time.get_ticks() - last_slime_spawn_time > 10000:
+        new_slime = Slime(randint(100, 700), randint(100, 500))
+        slimes.append(new_slime)
+        last_slime_spawn_time = pygame.time.get_ticks()
 
     pygame.display.flip()
     clock.tick(60)
