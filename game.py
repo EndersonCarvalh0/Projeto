@@ -3,15 +3,32 @@ from pygame.locals import *
 import sys
 import random
 from random import randint
-
+from PIL import Image
 
 pygame.init()
 pygame.display.set_caption("Mata os Slimes, Cleitin!")
 
-larg_tela = 800
-alt_tela = 600
+larg_tela = 900
+alt_tela = 900
 tela = pygame.display.set_mode((larg_tela, alt_tela))
-BLACK = (0, 0, 0)
+grass = pygame.image.load("Mapa/grass1.png")
+rock = pygame.image.load("Mapa/rock_in_water_02.png")
+floorp = pygame.image.load("Mapa/srock.png")
+grasses = pygame.image.load("Mapa/grassn.png")
+grasses1 = pygame.image.load("Mapa/grassn1.png")
+grasses2 = pygame.image.load("Mapa/grassn2.png")
+grasses3 = pygame.image.load("Mapa/grassn3.png")
+wood = pygame.image.load("Mapa/wooden.png")
+santa = pygame.image.load("Mapa/Santa.png")
+cova1 = pygame.image.load("Mapa/cova1.png")
+cova2 = pygame.image.load("Mapa/cova2.png")
+cova3 = pygame.image.load("Mapa/cova3.png")
+arvore = pygame.image.load("Mapa/arvore.png")
+arvoreg = pygame.image.load("Mapa/arvoreg.png")
+bancoesq = pygame.image.load("Mapa/bancoesq.png")
+bancodir = pygame.image.load("Mapa/bancodir.png")
+map = Image.open("Mapa/map1.png")
+
 
 def cut_sprite(sprite, frame_x, frame_y, num_frames, num_rows):
     animation = []
@@ -310,7 +327,34 @@ slimes = [Slime(100, 100)]
 last_slime_spawn_time = pygame.time.get_ticks()
 running = True
 while running:
-    tela.fill(BLACK)
+    xy = [0, 0]
+    for x in range(30):
+        for y in range(30):
+            xy = [x, y]
+            pixel = map.getpixel(xy)
+            if pixel == (0, 0, 0):
+                tela.blit(grass, (x*30, y*30))
+            if pixel == (255, 255, 255):
+                tela.blit(rock, (x*30, y*30))
+            if pixel == (127, 127, 127):
+                tela.blit(floorp, (x*30, y*30))
+            if pixel == (0, 0, 255):
+                tela.blit(wood, (x*30, y*30))
+
+    tela.blit(grasses, (90, 180))
+    tela.blit(grasses, (90, 210))
+    tela.blit(santa, (375, 0))
+    tela.blit(cova1, (330, 75))
+    tela.blit(cova2, (380, 75))
+    tela.blit(cova3, (420, 85))
+    tela.blit(arvore, (255, 675))
+    tela.blit(arvoreg, (460, -60))
+    tela.blit(grasses1, (240, 30))
+    tela.blit(grasses2, (240, 85))
+    tela.blit(grasses2, (240, 120))
+    tela.blit(grasses3, (500, 70))
+    tela.blit(bancoesq, (450, 120))
+    tela.blit(bancodir, (300, 120))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -323,15 +367,15 @@ while running:
         player_x -= player_speed
         last_direction = 'left'
         moving = True
-    if keys[pygame.K_d]:
+    elif keys[pygame.K_d]:
         player_x += player_speed
         last_direction = 'right'
         moving = True
-    if keys[pygame.K_s]:
+    elif keys[pygame.K_s]:
         player_y += player_speed
         last_direction = 'down'
         moving = True
-    if keys[pygame.K_w]:
+    elif keys[pygame.K_w]:
         player_y -= player_speed
         last_direction = 'up'
         moving = True
