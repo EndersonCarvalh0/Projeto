@@ -34,6 +34,7 @@ placadir = pygame.image.load("Mapa/placadir.png")
 placaesq = pygame.image.load("Mapa/placaesq.png")
 objl = pygame.image.load("Mapa/objl.png")
 caixaoy = pygame.image.load("Mapa/caixaoy.png")
+caixaox = pygame.image.load("Mapa/caixaox.png")
 pilarg = pygame.image.load("Mapa/pilarg.png")
 pilarm = pygame.image.load("Mapa/pilarm.png")
 pilarp = pygame.image.load("Mapa/pilarp.png")
@@ -142,8 +143,8 @@ slime_death = cut_sprite(death_slime, frame_x_slime,
 
 player_larg = 16
 player_alt = 16
-player_x = (larg_tela - player_larg) // 2
-player_y = (alt_tela - player_alt) // 2
+player_x = 10
+player_y = 830
 player_speed = 2
 current_frame = 0
 frame_time = 100
@@ -337,8 +338,9 @@ def game_over():
 
 
 clock = pygame.time.Clock()
-slimes = [Slime(30, 30)]
-last_slime_spawn_time = pygame.time.get_ticks()
+slimes = []
+spawn_points = [(35, 30), (830, 30), (830, 360)]
+last_slime_spawn_time = 0
 running = True
 while running:
     xy = [0, 0]
@@ -365,6 +367,10 @@ while running:
     tela.blit(arvore, (255, 675))
     tela.blit(arvore, (437, 465))
     tela.blit(arvoreg, (460, -60))
+    tela.blit(grasses2, (305, 500))
+    tela.blit(grasses2, (305, 530))
+    tela.blit(grasses2, (215, 500))
+    tela.blit(grasses2, (215, 530))
     tela.blit(grasses1, (240, 30))
     tela.blit(grasses2, (240, 85))
     tela.blit(grasses2, (240, 120))
@@ -382,6 +388,7 @@ while running:
     tela.blit(placaesq, (240, 380))
     tela.blit(objl, (845, 830))
     tela.blit(caixaoy, (750, 810))
+    tela.blit(caixaox, (120, 500))
     tela.blit(pilarg, (840, 525))
     tela.blit(pilarm, (840, 100))
     tela.blit(pilarp, (25, 130))
@@ -389,6 +396,7 @@ while running:
     tela.blit(pilarm, (450, 700))
     tela.blit(pilarp, (400, 700))
     tela.blit(escombros, (600, 820))
+
     tela.blit(gram1, (90, 30))
     tela.blit(gram2, (120, 80))
     tela.blit(gram3, (150, 150))
@@ -411,6 +419,40 @@ while running:
     tela.blit(gram1, (580, 50))
     tela.blit(gram2, (660, 30))
     tela.blit(gram3, (730, 30))
+    tela.blit(gram1, (790, 220))
+    tela.blit(gram3, (730, 220))
+    tela.blit(gram2, (660, 220))
+    tela.blit(gram3, (590, 220))
+    tela.blit(gram1, (640, 280))
+    tela.blit(gram3, (640, 340))
+    tela.blit(gram2, (640, 400))
+    tela.blit(gram3, (700, 390))
+    tela.blit(gram1, (770, 390))
+    tela.blit(gram2, (670, 460))
+    tela.blit(gram3, (730, 460))
+    tela.blit(gram2, (780, 590))
+    tela.blit(gram1, (670, 600))
+    tela.blit(gram2, (670, 670))
+    tela.blit(gram3, (600, 650))
+    tela.blit(gram1, (600, 720))
+    tela.blit(gram2, (600, 790))
+    tela.blit(gram1, (530, 640))
+    tela.blit(gram3, (460, 640))
+    tela.blit(gram2, (390, 640))
+    tela.blit(gram3, (250, 620))
+    tela.blit(gram1, (180, 620))
+    tela.blit(gram3, (110, 620))
+    tela.blit(gram2, (180, 690))
+    tela.blit(gram3, (40, 620))
+    tela.blit(gram3, (180, 540))
+    tela.blit(gram1, (115, 540))
+    tela.blit(gram3, (270, 805))
+    tela.blit(gram2, (340, 805))
+    tela.blit(gram3, (270, 330))
+    tela.blit(gram1, (210, 330))
+    tela.blit(gram1, (270, 270))
+    tela.blit(gram2, (210, 270))
+    tela.blit(gram3, (310, 210))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -489,8 +531,9 @@ while running:
 
     draw_hitboxes(slimes)
 
-    if pygame.time.get_ticks() - last_slime_spawn_time > 10000:
-        new_slime = Slime(randint(100, 700), randint(100, 500))
+    if pygame.time.get_ticks() - last_slime_spawn_time > 1000:
+        spawn_x, spawn_y = random.choice(spawn_points)
+        new_slime = Slime(spawn_x, spawn_y)
         slimes.append(new_slime)
         last_slime_spawn_time = pygame.time.get_ticks()
 
