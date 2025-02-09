@@ -105,40 +105,25 @@ stand_slime_frames = 4
 player_run_up = cut_sprite(run_up, frame_x, frame_y, num_frames, num_rows)
 player_run_down = cut_sprite(run_down, frame_x, frame_y, num_frames, num_rows)
 player_run_left = cut_sprite(run_left, frame_x, frame_y, num_frames, num_rows)
-player_run_right = cut_sprite(
-    run_right, frame_x, frame_y, num_frames, num_rows)
+player_run_right = cut_sprite(run_right, frame_x, frame_y, num_frames, num_rows)
 
-player_stand_up_frames = cut_sprite(
-    sup, frame_x, frame_y, stand_frames, num_rows)
-player_stand_down_frames = cut_sprite(
-    sdown, frame_x, frame_y, stand_frames, num_rows)
-player_stand_left_frames = cut_sprite(
-    sleft, frame_x, frame_y, stand_frames, num_rows)
-player_stand_right_frames = cut_sprite(
-    sright, frame_x, frame_y, stand_frames, num_rows)
+player_stand_up_frames = cut_sprite(sup, frame_x, frame_y, stand_frames, num_rows)
+player_stand_down_frames = cut_sprite(sdown, frame_x, frame_y, stand_frames, num_rows)
+player_stand_left_frames = cut_sprite(sleft, frame_x, frame_y, stand_frames, num_rows)
+player_stand_right_frames = cut_sprite(sright, frame_x, frame_y, stand_frames, num_rows)
 
-player_death = cut_sprite(death_player, frame_x,
-                          frame_dead_y, death_player_frames, num_rows)
-slime_run_up = cut_sprite(slime_up, frame_x_slime,
-                          frame_y_slime, slime_frames, num_rows)
-slime_run_down = cut_sprite(
-    slime_down, frame_x_slime, frame_y_slime, slime_frames, num_rows)
-slime_run_left = cut_sprite(
-    slime_left, frame_x_slime, frame_y_slime, slime_frames, num_rows)
-slime_run_right = cut_sprite(
-    slime_right, frame_x_slime, frame_y_slime, slime_frames, num_rows)
+player_death = cut_sprite(death_player, frame_x,frame_dead_y, death_player_frames, num_rows)
+slime_run_up = cut_sprite(slime_up, frame_x_slime,frame_y_slime, slime_frames, num_rows)
+slime_run_down = cut_sprite(slime_down, frame_x_slime, frame_y_slime, slime_frames, num_rows)
+slime_run_left = cut_sprite(slime_left, frame_x_slime, frame_y_slime, slime_frames, num_rows)
+slime_run_right = cut_sprite(slime_right, frame_x_slime, frame_y_slime, slime_frames, num_rows)
 
-slime_stand_up = cut_sprite(
-    pslime_up, frame_x_slime, frame_y_slime, stand_slime_frames, num_rows)
-slime_stand_down = cut_sprite(
-    pslime_down, frame_x_slime, frame_y_slime, stand_slime_frames, num_rows)
-slime_stand_left = cut_sprite(
-    pslime_left, frame_x_slime, frame_y_slime, stand_slime_frames, num_rows)
-slime_stand_right = cut_sprite(
-    pslime_right, frame_x_slime, frame_y_slime, stand_slime_frames, num_rows)
+slime_stand_up = cut_sprite(pslime_up, frame_x_slime, frame_y_slime, stand_slime_frames, num_rows)
+slime_stand_down = cut_sprite(pslime_down, frame_x_slime, frame_y_slime, stand_slime_frames, num_rows)
+slime_stand_left = cut_sprite(pslime_left, frame_x_slime, frame_y_slime, stand_slime_frames, num_rows)
+slime_stand_right = cut_sprite(pslime_right, frame_x_slime, frame_y_slime, stand_slime_frames, num_rows)
 
-slime_death = cut_sprite(death_slime, frame_x_slime,
-                         frame_y_slime, death_slime_frames, num_rows)
+slime_death = cut_sprite(death_slime, frame_x_slime,frame_y_slime, death_slime_frames, num_rows)
 
 
 player_larg = 16
@@ -155,6 +140,15 @@ last_direction = None
 
 player_alive = True
 slime_alive = True
+
+hitboxes = []
+
+
+def check_collision(rect, hitboxes):
+    for hitbox in hitboxes:
+        if rect.colliderect(hitbox):
+            return True
+    return False
 
 
 class Slime:
@@ -292,7 +286,7 @@ def draw_slime(x, y, animation_frames):
 def get_player_hitbox():
     hitbox_width = 16
     hitbox_height = 16
-    return pygame.Rect(player_x + 17, player_y + 22, hitbox_width, hitbox_height)
+    return pygame.Rect(player_x + 17, player_y + 24, hitbox_width, hitbox_height)
 
 
 def draw_hitboxes(slimes):
@@ -300,7 +294,6 @@ def draw_hitboxes(slimes):
     player_hitbox = get_player_hitbox()
 
     pygame.draw.rect(tela, (255, 0, 0), player_hitbox, 2)
-
     for slime in slimes:
         if slime.alive:
             vision_hitbox = slime.get_hitbox()
@@ -325,7 +318,6 @@ def is_player_behind_slime(slime):
     elif slime.direction == 'right':
         return player_x < slime.x
 
-
 def game_over():
     font = pygame.font.SysFont(None, 74)
     text = font.render('GAME OVER', True, (255, 0, 0))
@@ -336,13 +328,15 @@ def game_over():
     pygame.quit()
     sys.exit()
 
-
 clock = pygame.time.Clock()
 slimes = []
 spawn_points = [(35, 30), (830, 30), (830, 360)]
 last_slime_spawn_time = 0
 running = True
 while running:
+    tela.fill((0, 0, 0))
+    hitboxes.clear()
+
     xy = [0, 0]
     for x in range(30):
         for y in range(30):
@@ -352,6 +346,9 @@ while running:
                 tela.blit(grass, (x*30, y*30))
             if pixel == (255, 255, 255):
                 tela.blit(rock, (x*30, y*30))
+                hitbox = pygame.Rect(x * 30, y * 30, 30, 30)
+                hitboxes.append(hitbox)
+                pygame.draw.rect(tela, (0, 0, 0), hitbox, 2)
             if pixel == (127, 127, 127):
                 tela.blit(floorp, (x*30, y*30))
             if pixel == (0, 0, 255):
@@ -396,7 +393,6 @@ while running:
     tela.blit(pilarm, (450, 700))
     tela.blit(pilarp, (400, 700))
     tela.blit(escombros, (600, 820))
-
     tela.blit(gram1, (90, 30))
     tela.blit(gram2, (120, 80))
     tela.blit(gram3, (150, 150))
@@ -478,6 +474,17 @@ while running:
         last_direction = 'up'
         moving = True
 
+    player_hitbox = get_player_hitbox()
+    if check_collision(player_hitbox, hitboxes):
+        if last_direction == 'left':
+            player_x += player_speed
+        elif last_direction == 'right':
+            player_x -= player_speed
+        elif last_direction == 'down':
+            player_y -= player_speed
+        elif last_direction == 'up':
+            player_y += player_speed
+
     if moving:
         if last_direction == 'left':
             if pygame.time.get_ticks() - last_frame_time > frame_time:
@@ -505,21 +512,28 @@ while running:
             current_frame = (current_frame + 1) % len(player_stand_up_frames)
 
         if last_direction == 'up':
-            tela.blit(
-                player_stand_up_frames[current_frame], (player_x, player_y))
+            tela.blit(player_stand_up_frames[current_frame], (player_x, player_y))
         elif last_direction == 'down':
-            tela.blit(
-                player_stand_down_frames[current_frame], (player_x, player_y))
+            tela.blit(player_stand_down_frames[current_frame], (player_x, player_y))
         elif last_direction == 'left':
-            tela.blit(
-                player_stand_left_frames[current_frame], (player_x, player_y))
+            tela.blit(player_stand_left_frames[current_frame], (player_x, player_y))
         elif last_direction == 'right':
-            tela.blit(
-                player_stand_right_frames[current_frame], (player_x, player_y))
+            tela.blit(player_stand_right_frames[current_frame], (player_x, player_y))
 
     for slime in slimes[:]:
         slime.move()
         slime.draw()
+
+        slime_hitbox = slime.get_body_hitbox()
+        if check_collision(slime_hitbox, hitboxes):
+            if slime.direction == 'up':
+                slime.y += 1
+            elif slime.direction == 'down':
+                slime.y -= 1
+            elif slime.direction == 'left':
+                slime.x += 1
+            elif slime.direction == 'right':
+                slime.x -= 1
 
         if is_player_behind_slime(slime) and slime.get_body_hitbox().colliderect(get_player_hitbox()):
             print("Slime foi morta pelo jogador!")
