@@ -128,7 +128,7 @@ slime_death = cut_sprite(death_slime, frame_x_slime,frame_y_slime, death_slime_f
 
 player_larg = 16
 player_alt = 16
-player_x = 10
+player_x = 12
 player_y = 830
 player_speed = 2
 current_frame = 0
@@ -353,6 +353,9 @@ while running:
                 tela.blit(floorp, (x*30, y*30))
             if pixel == (0, 0, 255):
                 tela.blit(wood, (x*30, y*30))
+                hitbox = pygame.Rect(x * 30, y * 30, 30, 30)
+                hitboxes.append(hitbox)
+                pygame.draw.rect(tela, (0, 0, 0), hitbox, 2)
 
     tela.blit(grasses, (90, 180))
     tela.blit(grasses, (90, 210))
