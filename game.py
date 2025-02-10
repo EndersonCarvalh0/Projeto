@@ -595,7 +595,7 @@ while running:
 
     draw_hitboxes(slimes)
 
-    if pygame.time.get_ticks() - last_slime_spawn_time > 5000:
+    if pygame.time.get_ticks() - last_slime_spawn_time > 3500:
         spawn_x, spawn_y = random.choice(spawn_points)
         new_slime = Slime(spawn_x, spawn_y)
         slimes.append(new_slime)
