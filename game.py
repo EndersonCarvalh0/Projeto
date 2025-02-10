@@ -6,6 +6,7 @@ from random import randint
 from PIL import Image
 
 pygame.init()
+temp_play = pygame.time.get_ticks()
 pygame.display.set_caption("Mata os Slimes, Cleitin!")
 
 music = pygame.mixer.music.load("Musicas/Otonoke.mp3")
@@ -50,7 +51,6 @@ gram2 = pygame.image.load("Mapa/gram2.png")
 gram3 = pygame.image.load("Mapa/gram3.png")
 map = Image.open("Mapa/map1.png")
 
-
 def cut_sprite(sprite, frame_x, frame_y, num_frames, num_rows):
     animation = []
     for l in range(num_rows):
@@ -62,10 +62,8 @@ def cut_sprite(sprite, frame_x, frame_y, num_frames, num_rows):
             animation.append(frame)
     return animation
 
-
 def reverse_animation(frames):
     return frames[::-1]
-
 
 run_up = pygame.image.load('Sprites/andandoc (1).png')
 run_down = pygame.image.load('Sprites/andandof (1).png')
@@ -76,8 +74,6 @@ sup = pygame.image.load('Sprites/paradoc.png')
 sdown = pygame.image.load('Sprites/paradof.png')
 sleft = pygame.image.load('Sprites/paradole.png')
 sright = pygame.image.load('Sprites/paradol.png')
-
-death_player = pygame.image.load("Sprites/death.png")
 
 slime_up = pygame.image.load('Sprites/slimec.png')
 slime_down = pygame.image.load('Sprites/slimef.png')
@@ -91,22 +87,18 @@ pslime_right = pygame.image.load('Sprites/pslimel.png')
 
 death_slime = pygame.image.load("Sprites/slimedeath.png")
 
-
 frame_x = 48
 frame_y = 58
-frame_dead_y = 32
 stand_frames = 4
 num_frames = 6
 num_rows = 1
 stand_frames = 6
-death_player_frames = 3
 
 frame_x_slime = 33
 frame_y_slime = 38
 slime_frames = 6
 death_slime_frames = 5
 stand_slime_frames = 4
-
 
 player_run_up = cut_sprite(run_up, frame_x, frame_y, num_frames, num_rows)
 player_run_down = cut_sprite(run_down, frame_x, frame_y, num_frames, num_rows)
@@ -118,7 +110,6 @@ player_stand_down_frames = cut_sprite(sdown, frame_x, frame_y, stand_frames, num
 player_stand_left_frames = cut_sprite(sleft, frame_x, frame_y, stand_frames, num_rows)
 player_stand_right_frames = cut_sprite(sright, frame_x, frame_y, stand_frames, num_rows)
 
-player_death = cut_sprite(death_player, frame_x,frame_dead_y, death_player_frames, num_rows)
 slime_run_up = cut_sprite(slime_up, frame_x_slime,frame_y_slime, slime_frames, num_rows)
 slime_run_down = cut_sprite(slime_down, frame_x_slime, frame_y_slime, slime_frames, num_rows)
 slime_run_left = cut_sprite(slime_left, frame_x_slime, frame_y_slime, slime_frames, num_rows)
@@ -131,7 +122,6 @@ slime_stand_right = cut_sprite(pslime_right, frame_x_slime, frame_y_slime, stand
 
 slime_death = cut_sprite(death_slime, frame_x_slime,frame_y_slime, death_slime_frames, num_rows)
 
-
 player_larg = 16
 player_alt = 16
 player_x = 15
@@ -143,20 +133,18 @@ last_frame_time = pygame.time.get_ticks()
 
 last_direction = None
 
-
+slime_deaths = 0
 player_alive = True
 slime_alive = True
 
 hitboxes_for_player = []
 hitboxes_for_slime = []
 
-
 def check_collision(rect, hitboxes):
     for hitbox in hitboxes:
         if rect.colliderect(hitbox):
             return True
     return False
-
 
 class Slime:
     def __init__(self, x, y):
@@ -216,13 +204,13 @@ class Slime:
                 return
 
         if self.direction == 'up':
-            self.y -= 1
+            self.y -= 1.25
         elif self.direction == 'down':
-            self.y += 1
+            self.y += 1.25
         elif self.direction == 'left':
-            self.x -= 1
+            self.x -= 1.25
         elif self.direction == 'right':
-            self.x += 1
+            self.x += 1.25
 
         self.steps += 1
 
@@ -319,12 +307,10 @@ def draw_slime(x, y, animation_frames):
     else:
         tela.blit(animation_frames[0], (x, y))
 
-
 def get_player_hitbox():
     hitbox_width = 16
     hitbox_height = 16
     return pygame.Rect(player_x + 17, player_y + 24, hitbox_width, hitbox_height)
-
 
 def draw_hitboxes(slimes):
     global player_alive, slime_alive
@@ -335,13 +321,11 @@ def draw_hitboxes(slimes):
         if slime.alive:
             vision_hitbox = slime.get_hitbox()
             slime_body_hitbox = slime.get_body_hitbox()
-
             pygame.draw.rect(tela, (0, 255, 0), vision_hitbox, 2)
             pygame.draw.rect(tela, (0, 0, 255), slime_body_hitbox, 2)
             if slime_body_hitbox.colliderect(player_hitbox):
                 print("Jogador foi pego pela slime!")
                 game_over()
-
 
 def is_player_behind_slime(slime):
     global player_x, player_y
@@ -355,11 +339,23 @@ def is_player_behind_slime(slime):
     elif slime.direction == 'right':
         return player_x < slime.x
 
+def stats():
+    global slime_deaths
+    font = pygame.font.Font("font/PressStart2P-Regular.ttf", 10)
+    slime_text = font.render(f'Slime Deaths: {slime_deaths}', True, (0, 175, 0))
+    elapsed_time = pygame.time.get_ticks() - temp_play
+    seconds = (elapsed_time // 1000) % 60
+    minutes = (elapsed_time // 60000) % 60
+    time_text = font.render(f'Time: {minutes:02}:{seconds:02}', True, (0, 175, 0))
+    slime_rect = slime_text.get_rect(topleft=(30, 5))
+    time_rect = time_text.get_rect(topleft=(200, 5))
+    tela.blit(slime_text, slime_rect)
+    tela.blit(time_text, time_rect)
 
 def game_over():
     pygame.mixer.music.stop()
     gameOver.play()
-    font = pygame.font.SysFont(None, 74)
+    font = pygame.font.Font("font/PressStart2P-Regular.ttf", 80)
     text = font.render('GAME OVER', True, (255, 0, 0))
     text_rect = text.get_rect(center=(larg_tela // 2, alt_tela // 2))
     tela.blit(text, text_rect)
@@ -368,9 +364,9 @@ def game_over():
     pygame.quit()
     sys.exit()
 
-
 clock = pygame.time.Clock()
 slimes = []
+slimes_death = []
 spawn_points = [(35, 30), (830, 30), (830, 360)]
 last_slime_spawn_time = 0
 running = True
@@ -500,8 +496,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+    stats()
     keys = pygame.key.get_pressed()
-
     moving = False
     if keys[pygame.K_a]:
         player_x -= player_speed
@@ -583,11 +579,19 @@ while running:
 
         if is_player_behind_slime(slime) and slime.get_body_hitbox().colliderect(get_player_hitbox()):
             print("Slime foi morta pelo jogador!")
+            slime_deaths += 1
             slime.play_death_animation()
             slime.alive = False
+            slimes_death.append(slime)
+            slimes.remove(slime)
 
         if not slime.alive and not slime.death_animation_playing:
             slimes.remove(slime)
+
+    for slime_morta in slimes_death:
+        slime_morta.draw()
+        if not slime_morta.death_animation_playing:
+            slimes_death.remove(slime_morta)
 
     draw_hitboxes(slimes)
 
