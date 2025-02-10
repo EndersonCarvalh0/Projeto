@@ -8,6 +8,9 @@ from PIL import Image
 pygame.init()
 pygame.display.set_caption("Mata os Slimes, Cleitin!")
 
+music = pygame.mixer.music.load("Musicas/Otonoke.mp3")
+pygame.mixer.music.play(-1)
+
 larg_tela = 900
 alt_tela = 900
 tela = pygame.display.set_mode((larg_tela, alt_tela))
