@@ -158,7 +158,7 @@ class Slime:
         self.y = y
         self.direction = random.choice(['up', 'down', 'left', 'right'])
         self.steps = 0
-        self.max_steps = 100
+        self.max_steps = 150
         self.min_steps = 25
         self.pause_duration = randint(500, 3000)
         self.last_change_time = 0
