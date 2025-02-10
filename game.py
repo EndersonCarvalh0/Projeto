@@ -141,7 +141,8 @@ last_direction = None
 player_alive = True
 slime_alive = True
 
-hitboxes = []
+hitboxes_for_player = []
+hitboxes_for_slime = []
 
 
 def check_collision(rect, hitboxes):
@@ -163,25 +164,38 @@ class Slime:
         self.last_change_time = 0
         self.is_paused = False
         self.is_berserk = False
+        self.start_berserk = 0
+        self.berserk_duration = 10000
         self.death_animation_playing = False
         self.death_animation_start_time = 0
         self.death_animation_duration = 750
         self.alive = True
 
     def move(self):
+        player_hitbox = get_player_hitbox()
+        vision_hitbox = self.get_hitbox()
+
         global player_x, player_y
 
         if not self.alive:
             return
 
-        player_hitbox = get_player_hitbox()
-        vision_hitbox = self.get_hitbox()
+        slime_hitbox = self.get_hitbox()
+        if check_collision(slime_hitbox, hitboxes_for_slime):
+            self.change_direction()
+
         if vision_hitbox.colliderect(player_hitbox):
-            self.is_berserk = True
+            if vision_hitbox.colliderect(player_hitbox):
+                if not self.is_berserk:
+                    self.is_berserk = True
+                    self.berserk_start_time = pygame.time.get_ticks()
 
         if self.is_berserk:
-            self.berserk()
-            return
+            if pygame.time.get_ticks() - self.berserk_start_time >= self.berserk_duration:
+                self.is_berserk = False
+            else:
+                self.berserk()
+                return
 
         if self.steps >= self.max_steps:
             self.is_paused = True
@@ -206,27 +220,43 @@ class Slime:
 
         self.steps += 1
 
+    def change_direction(self):
+        self.direction = random.choice(['up', 'down', 'left', 'right'])
+        print("mudando")
+
     def berserk(self):
         global player_x, player_y
+        dx = player_x - self.x
+        dy = player_y - self.y
 
-        if self.x < player_x:
-            self.direction = 'right'
-        elif self.x > player_x:
-            self.direction = 'left'
+        if abs(dx) > abs(dy):
+            if dx > 0:
+                self.direction = 'right'
+            else:
+                self.direction = 'left'
+        else:
+            if dy > 0:
+                self.direction = 'down'
+            else:
+                self.direction = 'up'
 
-        if self.y < player_y:
-            self.direction = 'down'
-        elif self.y > player_y:
-            self.direction = 'up'
-
+        next_x, next_y = self.x, self.y
+        speed_slime = 1.85
         if self.direction == 'up':
-            self.y -= 2
+            next_y -= speed_slime
         elif self.direction == 'down':
-            self.y += 2
+            next_y += speed_slime
         elif self.direction == 'left':
-            self.x -= 2
+            next_x -= speed_slime
         elif self.direction == 'right':
-            self.x += 2
+            next_x += speed_slime
+
+        next_hitbox = pygame.Rect(
+            next_x, next_y, self.get_hitbox().width, self.get_hitbox().height)
+        if not check_collision(next_hitbox, hitboxes_for_slime):
+            self.x, self.y = next_x, next_y
+        else:
+            self.change_direction()
 
     def get_hitbox(self):
         if self.direction == 'up':
@@ -318,6 +348,7 @@ def is_player_behind_slime(slime):
     elif slime.direction == 'right':
         return player_x < slime.x
 
+
 def game_over():
     font = pygame.font.SysFont(None, 74)
     text = font.render('GAME OVER', True, (255, 0, 0))
@@ -328,6 +359,7 @@ def game_over():
     pygame.quit()
     sys.exit()
 
+
 clock = pygame.time.Clock()
 slimes = []
 spawn_points = [(35, 30), (830, 30), (830, 360)]
@@ -335,7 +367,8 @@ last_slime_spawn_time = 0
 running = True
 while running:
     tela.fill((0, 0, 0))
-    hitboxes.clear()
+    hitboxes_for_player.clear()
+    hitboxes_for_slime.clear()
 
     xy = [0, 0]
     for x in range(30):
@@ -347,14 +380,15 @@ while running:
             if pixel == (255, 255, 255):
                 tela.blit(rock, (x*30, y*30))
                 hitbox = pygame.Rect(x * 30, y * 30, 30, 30)
-                hitboxes.append(hitbox)
+                hitboxes_for_player.append(hitbox)
                 pygame.draw.rect(tela, (0, 0, 0), hitbox, 2)
             if pixel == (127, 127, 127):
                 tela.blit(floorp, (x*30, y*30))
             if pixel == (0, 0, 255):
                 tela.blit(wood, (x*30, y*30))
                 hitbox = pygame.Rect(x * 30, y * 30, 30, 30)
-                hitboxes.append(hitbox)
+                hitboxes_for_slime.append(hitbox)
+                hitboxes_for_player.append(hitbox)
                 pygame.draw.rect(tela, (0, 0, 0), hitbox, 2)
 
     tela.blit(grasses, (90, 180))
@@ -478,7 +512,7 @@ while running:
         moving = True
 
     player_hitbox = get_player_hitbox()
-    if check_collision(player_hitbox, hitboxes):
+    if check_collision(player_hitbox, hitboxes_for_player):
         if last_direction == 'left':
             player_x += player_speed
         elif last_direction == 'right':
@@ -528,7 +562,7 @@ while running:
         slime.draw()
 
         slime_hitbox = slime.get_body_hitbox()
-        if check_collision(slime_hitbox, hitboxes):
+        if check_collision(slime_hitbox, hitboxes_for_slime):
             if slime.direction == 'up':
                 slime.y += 1
             elif slime.direction == 'down':
@@ -548,7 +582,7 @@ while running:
 
     draw_hitboxes(slimes)
 
-    if pygame.time.get_ticks() - last_slime_spawn_time > 1000:
+    if pygame.time.get_ticks() - last_slime_spawn_time > 5000:
         spawn_x, spawn_y = random.choice(spawn_points)
         new_slime = Slime(spawn_x, spawn_y)
         slimes.append(new_slime)
