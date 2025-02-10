@@ -10,6 +10,9 @@ pygame.display.set_caption("Mata os Slimes, Cleitin!")
 
 music = pygame.mixer.music.load("Musicas/Otonoke.mp3")
 pygame.mixer.music.play(-1)
+death_sound = pygame.mixer.Sound("Musicas/Slime.wav")
+gold = pygame.mixer.Sound("Musicas/Gold.wav")
+gameOver = pygame.mixer.Sound("Musicas/GameOver.wav")
 
 larg_tela = 900
 alt_tela = 900
@@ -298,6 +301,7 @@ class Slime:
                 self.death_animation_playing = False
 
     def play_death_animation(self):
+        death_sound.play()
         self.death_animation_playing = True
         self.death_animation_start_time = pygame.time.get_ticks()
 
@@ -353,6 +357,8 @@ def is_player_behind_slime(slime):
 
 
 def game_over():
+    pygame.mixer.music.stop()
+    gameOver.play()
     font = pygame.font.SysFont(None, 74)
     text = font.render('GAME OVER', True, (255, 0, 0))
     text_rect = text.get_rect(center=(larg_tela // 2, alt_tela // 2))
