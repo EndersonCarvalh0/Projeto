@@ -4,52 +4,61 @@ import sys
 import random
 from random import randint
 from PIL import Image
+import os
+
+dir_princ = os.path.dirname(__file__)
+dir_img = os.path.join(dir_princ, "In game")
+dir_msc = os.path.join(dir_princ, "Musicas")
+dir_pers = os.path.join(dir_princ, "Sprites")
+dir_font = os.path.join(dir_princ, "font")
 
 pygame.init()
 temp_play = pygame.time.get_ticks()
 pygame.display.set_caption("Mata os Slimes, Cleitin!")
 
-music = pygame.mixer.music.load("Musicas/Otonoke.mp3")
+music = pygame.mixer.music.load(os.path.join(dir_msc, "Otonoke.mp3"))
 pygame.mixer.music.play(-1)
-death_sound = pygame.mixer.Sound("Musicas/Slime.wav")
-gold = pygame.mixer.Sound("Musicas/Gold.wav")
-gameOver = pygame.mixer.Sound("Musicas/GameOver.wav")
+death_sound = pygame.mixer.Sound(os.path.join(dir_msc,"Slime.wav"))
+gold = pygame.mixer.Sound(os.path.join(dir_msc,"Gold.wav"))
+gameOver = pygame.mixer.Sound(os.path.join(dir_msc,"GameOver.wav"))
+
+font_path = (os.path.join(dir_font, "G:/EstudoPython/Game/Game/font/PressStart2P-Regular.ttf"))
 
 larg_tela = 900
 alt_tela = 900
 tela = pygame.display.set_mode((larg_tela, alt_tela))
-grass = pygame.image.load("Mapa/grass1.png")
-rock = pygame.image.load("Mapa/rock_in_water_02.png")
-floorp = pygame.image.load("Mapa/srock.png")
-grasses = pygame.image.load("Mapa/grassn.png")
-grasses1 = pygame.image.load("Mapa/grassn1.png")
-grasses2 = pygame.image.load("Mapa/grassn2.png")
-grasses3 = pygame.image.load("Mapa/grassn3.png")
-wood = pygame.image.load("Mapa/wooden.png")
-santa = pygame.image.load("Mapa/Santa.png")
-cova1 = pygame.image.load("Mapa/cova1.png")
-cova2 = pygame.image.load("Mapa/cova2.png")
-cova3 = pygame.image.load("Mapa/cova3.png")
-arvore = pygame.image.load("Mapa/arvore.png")
-arvoreg = pygame.image.load("Mapa/arvoreg.png")
-bancoesq = pygame.image.load("Mapa/bancoesq.png")
-bancodir = pygame.image.load("Mapa/bancodir.png")
-bancof = pygame.image.load("Mapa/bancof.png")
-spawn = pygame.image.load("Mapa/spawn.png")
-spawng = pygame.image.load("Mapa/spawng.png")
-placadir = pygame.image.load("Mapa/placadir.png")
-placaesq = pygame.image.load("Mapa/placaesq.png")
-objl = pygame.image.load("Mapa/objl.png")
-caixaoy = pygame.image.load("Mapa/caixaoy.png")
-caixaox = pygame.image.load("Mapa/caixaox.png")
-pilarg = pygame.image.load("Mapa/pilarg.png")
-pilarm = pygame.image.load("Mapa/pilarm.png")
-pilarp = pygame.image.load("Mapa/pilarp.png")
-escombros = pygame.image.load("Mapa/escombros.png")
-gram1 = pygame.image.load("Mapa/gram1.png")
-gram2 = pygame.image.load("Mapa/gram2.png")
-gram3 = pygame.image.load("Mapa/gram3.png")
-map = Image.open("Mapa/map1.png")
+grass = pygame.image.load(os.path.join(dir_img, "grass1.png"))
+rock = pygame.image.load(os.path.join(dir_img, "rock_in_water_02.png")).convert_alpha()
+floorp = pygame.image.load(os.path.join(dir_img, "srock.png")).convert_alpha()
+grasses = pygame.image.load(os.path.join(dir_img, "grassn.png")).convert_alpha()
+grasses1 = pygame.image.load(os.path.join(dir_img, "grassn1.png")).convert_alpha()
+grasses2 = pygame.image.load(os.path.join(dir_img, "grassn2.png")).convert_alpha()
+grasses3 = pygame.image.load(os.path.join(dir_img, "grassn3.png")).convert_alpha()
+wood = pygame.image.load(os.path.join(dir_img, "wooden.png")).convert_alpha()
+santa = pygame.image.load(os.path.join(dir_img, "Santa.png")).convert_alpha()
+cova1 = pygame.image.load(os.path.join(dir_img, "cova1.png")).convert_alpha()
+cova2 = pygame.image.load(os.path.join(dir_img, "cova2.png")).convert_alpha()
+cova3 = pygame.image.load(os.path.join(dir_img, "cova3.png")).convert_alpha()
+arvore = pygame.image.load(os.path.join(dir_img, "arvore.png")).convert_alpha()
+arvoreg = pygame.image.load(os.path.join(dir_img, "arvoreg.png")).convert_alpha()
+bancoesq = pygame.image.load(os.path.join(dir_img, "bancoesq.png")).convert_alpha()
+bancodir = pygame.image.load(os.path.join(dir_img, "bancodir.png")).convert_alpha()
+bancof = pygame.image.load(os.path.join(dir_img, "bancof.png")).convert_alpha()
+spawn = pygame.image.load(os.path.join(dir_img, "spawn.png")).convert_alpha()
+spawng = pygame.image.load(os.path.join(dir_img, "spawng.png")).convert_alpha()
+placadir = pygame.image.load(os.path.join(dir_img, "placadir.png")).convert_alpha()
+placaesq = pygame.image.load(os.path.join(dir_img, "placaesq.png")).convert_alpha()
+objl = pygame.image.load(os.path.join(dir_img, "objl.png")).convert_alpha()
+caixaoy = pygame.image.load(os.path.join(dir_img, "caixaoy.png")).convert_alpha()
+caixaox = pygame.image.load(os.path.join(dir_img, "caixaox.png")).convert_alpha()
+pilarg = pygame.image.load(os.path.join(dir_img, "pilarg.png")).convert_alpha()
+pilarm = pygame.image.load(os.path.join(dir_img, "pilarm.png")).convert_alpha()
+pilarp = pygame.image.load(os.path.join(dir_img, "pilarp.png")).convert_alpha()
+escombros = pygame.image.load(os.path.join(dir_img, "escombros.png")).convert_alpha()
+gram1 = pygame.image.load(os.path.join(dir_img, "gram1.png")).convert_alpha()
+gram2 = pygame.image.load(os.path.join(dir_img, "gram2.png")).convert_alpha()
+gram3 = pygame.image.load(os.path.join(dir_img, "gram3.png")).convert_alpha()
+map = Image.open("In game\map1.png")
 
 def cut_sprite(sprite, frame_x, frame_y, num_frames, num_rows):
     animation = []
@@ -65,27 +74,27 @@ def cut_sprite(sprite, frame_x, frame_y, num_frames, num_rows):
 def reverse_animation(frames):
     return frames[::-1]
 
-run_up = pygame.image.load('Sprites/andandoc (1).png')
-run_down = pygame.image.load('Sprites/andandof (1).png')
-run_left = pygame.image.load('Sprites/andandole (2).png')
-run_right = pygame.image.load('Sprites/andandol (1).png')
+run_up = pygame.image.load(os.path.join(dir_pers,'andandoc (1).png')).convert_alpha()
+run_down = pygame.image.load(os.path.join(dir_pers,'andandof (1).png')).convert_alpha()
+run_left = pygame.image.load(os.path.join(dir_pers,'andandole (2).png')).convert_alpha()
+run_right = pygame.image.load(os.path.join(dir_pers,'andandol (1).png')).convert_alpha()
 
-sup = pygame.image.load('Sprites/paradoc.png')
-sdown = pygame.image.load('Sprites/paradof.png')
-sleft = pygame.image.load('Sprites/paradole.png')
-sright = pygame.image.load('Sprites/paradol.png')
+sup = pygame.image.load(os.path.join(dir_pers,'paradoc.png')).convert_alpha()
+sdown = pygame.image.load(os.path.join(dir_pers,'paradof.png')).convert_alpha()
+sleft = pygame.image.load(os.path.join(dir_pers,'paradole.png')).convert_alpha()
+sright = pygame.image.load(os.path.join(dir_pers,'paradol.png')).convert_alpha()
 
-slime_up = pygame.image.load('Sprites/slimec.png')
-slime_down = pygame.image.load('Sprites/slimef.png')
-slime_left = pygame.image.load('Sprites/slimele.png')
-slime_right = pygame.image.load('Sprites/slimel.png')
+slime_up = pygame.image.load(os.path.join(dir_pers,'slimec.png')).convert_alpha()
+slime_down = pygame.image.load(os.path.join(dir_pers,'slimef.png')).convert_alpha()
+slime_left = pygame.image.load(os.path.join(dir_pers,'slimele.png')).convert_alpha()
+slime_right = pygame.image.load(os.path.join(dir_pers,'slimel.png')).convert_alpha()
 
-pslime_up = pygame.image.load('Sprites/pslimec.png')
-pslime_down = pygame.image.load('Sprites/pslimef.png')
-pslime_left = pygame.image.load('Sprites/pslimele.png')
-pslime_right = pygame.image.load('Sprites/pslimel.png')
+pslime_up = pygame.image.load(os.path.join(dir_pers,'pslimec.png')).convert_alpha()
+pslime_down = pygame.image.load(os.path.join(dir_pers,'pslimef.png')).convert_alpha()
+pslime_left = pygame.image.load(os.path.join(dir_pers,'pslimele.png')).convert_alpha()
+pslime_right = pygame.image.load(os.path.join(dir_pers,'pslimel.png')).convert_alpha()
 
-death_slime = pygame.image.load("Sprites/slimedeath.png")
+death_slime = pygame.image.load(os.path.join(dir_pers,"slimedeath.png")).convert_alpha()
 
 frame_x = 48
 frame_y = 58
@@ -341,7 +350,7 @@ def is_player_behind_slime(slime):
 
 def stats():
     global slime_deaths
-    font = pygame.font.Font("font/PressStart2P-Regular.ttf", 10)
+    font = pygame.font.Font(font_path, 10)
     slime_text = font.render(f'Slime Deaths: {slime_deaths}', True, (0, 175, 0))
     elapsed_time = pygame.time.get_ticks() - temp_play
     seconds = (elapsed_time // 1000) % 60
@@ -355,7 +364,7 @@ def stats():
 def game_over():
     pygame.mixer.music.stop()
     gameOver.play()
-    font = pygame.font.Font("font/PressStart2P-Regular.ttf", 80)
+    font = pygame.font.Font(font_path, 80)
     text = font.render('GAME OVER', True, (255, 0, 0))
     text_rect = text.get_rect(center=(larg_tela // 2, alt_tela // 2))
     tela.blit(text, text_rect)
