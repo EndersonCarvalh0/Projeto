@@ -18,9 +18,9 @@ pygame.display.set_caption("Mata os Slimes, Cleitin!")
 
 music = pygame.mixer.music.load(os.path.join(dir_msc, "Otonoke.mp3"))
 pygame.mixer.music.play(-1)
-death_sound = pygame.mixer.Sound(os.path.join(dir_msc,"Slime.wav"))
-gold = pygame.mixer.Sound(os.path.join(dir_msc,"Gold.wav"))
-gameOver = pygame.mixer.Sound(os.path.join(dir_msc,"GameOver.wav"))
+death_sound = pygame.mixer.Sound(os.path.join(dir_msc, "Slime.wav"))
+gold = pygame.mixer.Sound(os.path.join(dir_msc, "Gold.wav"))
+gameOver = pygame.mixer.Sound(os.path.join(dir_msc, "GameOver.wav"))
 
 font_path = (os.path.join(dir_font, "G:/EstudoPython/Game/Game/font/PressStart2P-Regular.ttf"))
 
@@ -58,7 +58,9 @@ escombros = pygame.image.load(os.path.join(dir_img, "escombros.png")).convert_al
 gram1 = pygame.image.load(os.path.join(dir_img, "gram1.png")).convert_alpha()
 gram2 = pygame.image.load(os.path.join(dir_img, "gram2.png")).convert_alpha()
 gram3 = pygame.image.load(os.path.join(dir_img, "gram3.png")).convert_alpha()
+moeda = pygame.image.load(os.path.join(dir_img, "moeda.png")).convert_alpha()
 map = Image.open("In game\map1.png")
+
 
 def cut_sprite(sprite, frame_x, frame_y, num_frames, num_rows):
     animation = []
@@ -71,30 +73,32 @@ def cut_sprite(sprite, frame_x, frame_y, num_frames, num_rows):
             animation.append(frame)
     return animation
 
+
 def reverse_animation(frames):
     return frames[::-1]
 
-run_up = pygame.image.load(os.path.join(dir_pers,'andandoc (1).png')).convert_alpha()
-run_down = pygame.image.load(os.path.join(dir_pers,'andandof (1).png')).convert_alpha()
-run_left = pygame.image.load(os.path.join(dir_pers,'andandole (2).png')).convert_alpha()
-run_right = pygame.image.load(os.path.join(dir_pers,'andandol (1).png')).convert_alpha()
 
-sup = pygame.image.load(os.path.join(dir_pers,'paradoc.png')).convert_alpha()
-sdown = pygame.image.load(os.path.join(dir_pers,'paradof.png')).convert_alpha()
-sleft = pygame.image.load(os.path.join(dir_pers,'paradole.png')).convert_alpha()
-sright = pygame.image.load(os.path.join(dir_pers,'paradol.png')).convert_alpha()
+run_up = pygame.image.load(os.path.join(dir_pers, 'andandoc (1).png')).convert_alpha()
+run_down = pygame.image.load(os.path.join(dir_pers, 'andandof (1).png')).convert_alpha()
+run_left = pygame.image.load(os.path.join(dir_pers, 'andandole (2).png')).convert_alpha()
+run_right = pygame.image.load(os.path.join(dir_pers, 'andandol (1).png')).convert_alpha()
 
-slime_up = pygame.image.load(os.path.join(dir_pers,'slimec.png')).convert_alpha()
-slime_down = pygame.image.load(os.path.join(dir_pers,'slimef.png')).convert_alpha()
-slime_left = pygame.image.load(os.path.join(dir_pers,'slimele.png')).convert_alpha()
-slime_right = pygame.image.load(os.path.join(dir_pers,'slimel.png')).convert_alpha()
+sup = pygame.image.load(os.path.join(dir_pers, 'paradoc.png')).convert_alpha()
+sdown = pygame.image.load(os.path.join(dir_pers, 'paradof.png')).convert_alpha()
+sleft = pygame.image.load(os.path.join(dir_pers, 'paradole.png')).convert_alpha()
+sright = pygame.image.load(os.path.join(dir_pers, 'paradol.png')).convert_alpha()
 
-pslime_up = pygame.image.load(os.path.join(dir_pers,'pslimec.png')).convert_alpha()
-pslime_down = pygame.image.load(os.path.join(dir_pers,'pslimef.png')).convert_alpha()
-pslime_left = pygame.image.load(os.path.join(dir_pers,'pslimele.png')).convert_alpha()
-pslime_right = pygame.image.load(os.path.join(dir_pers,'pslimel.png')).convert_alpha()
+slime_up = pygame.image.load(os.path.join(dir_pers, 'slimec.png')).convert_alpha()
+slime_down = pygame.image.load(os.path.join(dir_pers, 'slimef.png')).convert_alpha()
+slime_left = pygame.image.load(os.path.join(dir_pers, 'slimele.png')).convert_alpha()
+slime_right = pygame.image.load(os.path.join(dir_pers, 'slimel.png')).convert_alpha()
 
-death_slime = pygame.image.load(os.path.join(dir_pers,"slimedeath.png")).convert_alpha()
+pslime_up = pygame.image.load(os.path.join(dir_pers, 'pslimec.png')).convert_alpha()
+pslime_down = pygame.image.load(os.path.join(dir_pers, 'pslimef.png')).convert_alpha()
+pslime_left = pygame.image.load(os.path.join(dir_pers, 'pslimele.png')).convert_alpha()
+pslime_right = pygame.image.load(os.path.join(dir_pers, 'pslimel.png')).convert_alpha()
+
+death_slime = pygame.image.load(os.path.join(dir_pers, "slimedeath.png")).convert_alpha()
 
 frame_x = 48
 frame_y = 58
@@ -108,6 +112,14 @@ frame_y_slime = 38
 slime_frames = 6
 death_slime_frames = 5
 stand_slime_frames = 4
+
+moeda_x = 16
+moeda_y = 16
+moeda_frames = 5
+spawn_interval = random.randint(10000, 15000)
+last_spawn_time = pygame.time.get_ticks()
+
+moeda = cut_sprite(moeda, moeda_x, moeda_y, moeda_frames, num_rows)
 
 player_run_up = cut_sprite(run_up, frame_x, frame_y, num_frames, num_rows)
 player_run_down = cut_sprite(run_down, frame_x, frame_y, num_frames, num_rows)
@@ -149,11 +161,13 @@ slime_alive = True
 hitboxes_for_player = []
 hitboxes_for_slime = []
 
+
 def check_collision(rect, hitboxes):
     for hitbox in hitboxes:
         if rect.colliderect(hitbox):
             return True
     return False
+
 
 class Slime:
     def __init__(self, x, y):
@@ -254,8 +268,7 @@ class Slime:
         elif self.direction == 'right':
             next_x += speed_slime
 
-        next_hitbox = pygame.Rect(
-            next_x, next_y, self.get_hitbox().width, self.get_hitbox().height)
+        next_hitbox = pygame.Rect(next_x, next_y, self.get_hitbox().width, self.get_hitbox().height)
         if not check_collision(next_hitbox, hitboxes_for_slime):
             self.x, self.y = next_x, next_y
         else:
@@ -289,8 +302,7 @@ class Slime:
         elif self.death_animation_playing:
             elapsed_time = pygame.time.get_ticks() - self.death_animation_start_time
             if elapsed_time < self.death_animation_duration:
-                frame_index = int(
-                    (elapsed_time / self.death_animation_duration) * len(slime_death))
+                frame_index = int((elapsed_time / self.death_animation_duration) * len(slime_death))
                 if frame_index >= len(slime_death):
                     frame_index = len(slime_death) - 1
                 tela.blit(slime_death[frame_index], (self.x, self.y))
@@ -302,13 +314,19 @@ class Slime:
         self.death_animation_playing = True
         self.death_animation_start_time = pygame.time.get_ticks()
 
+def spawn_coin():
+    spawn_point = random.choice(spawn_coin_points)
+    coins.append(spawn_point)
+
+def draw_coins():
+    for coin in coins:
+        tela.blit(moeda[current_frame % len(moeda)], coin)
 
 def draw_player(x, y, animation_frames):
     if current_frame < len(animation_frames):
         tela.blit(animation_frames[current_frame], (x, y))
     else:
         tela.blit(animation_frames[0], (x, y))
-
 
 def draw_slime(x, y, animation_frames):
     if current_frame < len(animation_frames):
@@ -376,6 +394,8 @@ def game_over():
 clock = pygame.time.Clock()
 slimes = []
 slimes_death = []
+spawn_coin_points = [(47, 45), (836, 50), (837, 375)]
+coins = []
 spawn_points = [(35, 30), (830, 30), (830, 360)]
 last_slime_spawn_time = 0
 running = True
@@ -383,6 +403,15 @@ while running:
     tela.fill((0, 0, 0))
     hitboxes_for_player.clear()
     hitboxes_for_slime.clear()
+    current_time = pygame.time.get_ticks()
+
+    if current_time - last_spawn_time >= spawn_interval:
+        spawn_coin()
+        last_spawn_time = current_time
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
 
     xy = [0, 0]
     for x in range(30):
@@ -504,6 +533,27 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+    for coin in coins[:]:
+        coin_rect = pygame.Rect(coin[0], coin[1], moeda_x, moeda_y)
+        if player_hitbox.colliderect(coin_rect):
+            gold.play()
+            coins.remove(coin)
+            spawn_coin()
+
+    if len(coins) == 0:
+        for _ in range(1):
+            spawn_coin()
+    current_time = pygame.time.get_ticks()
+
+    if current_time - last_spawn_time >= spawn_interval:
+        spawn_coin()
+        last_spawn_time = current_time
+
+    if pygame.time.get_ticks() - last_frame_time > frame_time:
+        last_frame_time = pygame.time.get_ticks()
+        current_frame = (current_frame + 1) % len(moeda)
+    draw_coins()
 
     stats()
     keys = pygame.key.get_pressed()
