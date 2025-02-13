@@ -116,6 +116,7 @@ stand_slime_frames = 4
 moeda_x = 16
 moeda_y = 16
 moeda_frames = 5
+points = 0
 spawn_interval = random.randint(10000, 15000)
 last_spawn_time = pygame.time.get_ticks()
 
@@ -370,14 +371,17 @@ def stats():
     global slime_deaths
     font = pygame.font.Font(font_path, 10)
     slime_text = font.render(f'Slime Deaths: {slime_deaths}', True, (0, 175, 0))
+    point_text = font.render(f'Points: {points}', True, (0, 175, 0))
     elapsed_time = pygame.time.get_ticks() - temp_play
     seconds = (elapsed_time // 1000) % 60
     minutes = (elapsed_time // 60000) % 60
     time_text = font.render(f'Time: {minutes:02}:{seconds:02}', True, (0, 175, 0))
-    slime_rect = slime_text.get_rect(topleft=(30, 5))
-    time_rect = time_text.get_rect(topleft=(200, 5))
+    slime_rect = slime_text.get_rect(topleft=(5, 5))
+    time_rect = time_text.get_rect(topleft=(165, 5))
+    point_rect = point_text.get_rect(topleft=(295, 5))
     tela.blit(slime_text, slime_rect)
     tela.blit(time_text, time_rect)
+    tela.blit(point_text, point_rect)
 
 def game_over():
     pygame.mixer.music.stop()
@@ -538,6 +542,7 @@ while running:
         coin_rect = pygame.Rect(coin[0], coin[1], moeda_x, moeda_y)
         if player_hitbox.colliderect(coin_rect):
             gold.play()
+            points += 100
             coins.remove(coin)
             spawn_coin()
 
@@ -555,7 +560,6 @@ while running:
         current_frame = (current_frame + 1) % len(moeda)
     draw_coins()
 
-    stats()
     keys = pygame.key.get_pressed()
     moving = False
     if keys[pygame.K_a]:
@@ -639,6 +643,7 @@ while running:
         if is_player_behind_slime(slime) and slime.get_body_hitbox().colliderect(get_player_hitbox()):
             print("Slime foi morta pelo jogador!")
             slime_deaths += 1
+            points += 10
             slime.play_death_animation()
             slime.alive = False
             slimes_death.append(slime)
@@ -652,13 +657,14 @@ while running:
         if not slime_morta.death_animation_playing:
             slimes_death.remove(slime_morta)
 
-    draw_hitboxes(slimes)
-
     if pygame.time.get_ticks() - last_slime_spawn_time > 3500:
         spawn_x, spawn_y = random.choice(spawn_points)
         new_slime = Slime(spawn_x, spawn_y)
         slimes.append(new_slime)
         last_slime_spawn_time = pygame.time.get_ticks()
+    
+    stats()
+    draw_hitboxes(slimes)
 
     pygame.display.flip()
     clock.tick(60)
