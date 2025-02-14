@@ -224,10 +224,9 @@ class Slime:
             self.change_direction()
 
         if vision_hitbox.colliderect(player_hitbox):
-            if vision_hitbox.colliderect(player_hitbox):
-                if not self.is_berserk:
-                    self.is_berserk = True
-                    self.berserk_start_time = pygame.time.get_ticks()
+            if not self.is_berserk:
+                self.is_berserk = True
+                self.berserk_start_time = pygame.time.get_ticks()
 
         if self.is_berserk:
             if pygame.time.get_ticks() - self.berserk_start_time >= self.berserk_duration:
