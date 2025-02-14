@@ -6,6 +6,7 @@ from random import randint
 from PIL import Image
 import os
 
+# Variáveis que armazenam os caminhos dos diretórios onde estão as imagens, músicas, sprites e fontes do jogo
 dir_princ = os.path.dirname(__file__)
 dir_img = os.path.join(dir_princ, "In game")
 dir_msc = os.path.join(dir_princ, "Musicas")
@@ -17,14 +18,18 @@ clock = pygame.time.Clock()
 temp_play = pygame.time.get_ticks()
 pygame.display.set_caption("Mata os Slimes, Cleitin!")
 
+# Carrega as músicas do jogo
 music = pygame.mixer.music.load(os.path.join(dir_msc, "Otonoke.mp3"))
 pygame.mixer.music.play(-1)
 death_sound = pygame.mixer.Sound(os.path.join(dir_msc, "Slime.wav"))
 gold = pygame.mixer.Sound(os.path.join(dir_msc, "Gold.wav"))
 gameOver = pygame.mixer.Sound(os.path.join(dir_msc, "GameOver.wav"))
 
-font_path = (os.path.join(dir_font, "G:/EstudoPython/Game/Game/font/PressStart2P-Regular.ttf"))
+# Carrega a fonte usada no jogo
+font_path = (os.path.join(
+    dir_font, "G:/EstudoPython/Game/Game/font/PressStart2P-Regular.ttf"))
 
+# Carrega as sprites e tiles usadas no mapa do jogo
 larg_tela = 900
 alt_tela = 900
 tela = pygame.display.set_mode((larg_tela, alt_tela))
@@ -62,6 +67,8 @@ gram3 = pygame.image.load(os.path.join(dir_img, "gram3.png")).convert_alpha()
 moeda = pygame.image.load(os.path.join(dir_img, "moeda.png")).convert_alpha()
 map = Image.open("In game\map1.png")
 
+# Função para recortar as sprites
+
 
 def cut_sprite(sprite, frame_x, frame_y, num_frames, num_rows):
     animation = []
@@ -74,11 +81,14 @@ def cut_sprite(sprite, frame_x, frame_y, num_frames, num_rows):
             animation.append(frame)
     return animation
 
+# Função para caso a sprite precise ser corrida da direita para a esquerda
+
 
 def reverse_animation(frames):
     return frames[::-1]
 
 
+# Carrega as sprites usadas no player e na slime
 run_up = pygame.image.load(os.path.join(dir_pers, 'andandoc (1).png')).convert_alpha()
 run_down = pygame.image.load(os.path.join(dir_pers, 'andandof (1).png')).convert_alpha()
 run_left = pygame.image.load(os.path.join(dir_pers, 'andandole (2).png')).convert_alpha()
@@ -101,26 +111,31 @@ pslime_right = pygame.image.load(os.path.join(dir_pers, 'pslimel.png')).convert_
 
 death_slime = pygame.image.load(os.path.join(dir_pers, "slimedeath.png")).convert_alpha()
 
+# Parâmetros do player para recortar a sprite
 frame_x = 48
 frame_y = 58
-stand_frames = 4
 num_frames = 6
 num_rows = 1
 stand_frames = 6
 
+# Parâmetros da slime para recortar a sprite
 frame_x_slime = 33
 frame_y_slime = 38
 slime_frames = 6
 death_slime_frames = 5
 stand_slime_frames = 4
 
+# Parâmetros da moeda para recortar a sprite
 moeda_x = 16
 moeda_y = 16
 moeda_frames = 5
+
+# Pontos do jogo e tempo decorrido até soltar uma nova moeda no jogo
 points = 0
 spawn_interval = random.randint(10000, 15000)
 last_spawn_time = pygame.time.get_ticks()
 
+# Uso prático da função que corta as sprites, com todos os parâmtros em uso
 moeda = cut_sprite(moeda, moeda_x, moeda_y, moeda_frames, num_rows)
 
 player_run_up = cut_sprite(run_up, frame_x, frame_y, num_frames, num_rows)
@@ -145,21 +160,25 @@ slime_stand_right = cut_sprite(pslime_right, frame_x_slime, frame_y_slime, stand
 
 slime_death = cut_sprite(death_slime, frame_x_slime,frame_y_slime, death_slime_frames, num_rows)
 
+# Parâmetros da hitbox do player
 player_larg = 16
 player_alt = 16
+
+# Posição inical do player
 player_x = 15
 player_y = 810
+
+# Apetrechos do player e slime
 player_speed = 2
 current_frame = 0
-frame_time = 100
+frame_time = 100  # tempo de atualização entre um quadro e outro
 last_frame_time = pygame.time.get_ticks()
-
 last_direction = None
-
 slime_deaths = 0
 player_alive = True
 slime_alive = True
 
+# Hitbox distintas para o player e a slime
 hitboxes_for_player = []
 hitboxes_for_slime = []
 
@@ -173,8 +192,11 @@ def check_collision(rect, hitboxes):
 
 class Slime:
     def __init__(self, x, y):
+        # Coordenas da slime
         self.x = x
         self.y = y
+
+        # Apetrechos da Slime
         self.direction = random.choice(['up', 'down', 'left', 'right'])
         self.steps = 0
         self.max_steps = 150
@@ -185,11 +207,14 @@ class Slime:
         self.is_berserk = False
         self.start_berserk = 0
         self.berserk_duration = 10000
+        self.alive = True
+
+        # Apetrechos de morte da slime
         self.death_animation_playing = False
         self.death_animation_start_time = 0
         self.death_animation_duration = 750
-        self.alive = True
 
+    # Função que testa se há algum apetrecho ativo, testa a hitbox e se não está havendo toques ou acontecendo algo, a partir disso, move a slime
     def move(self):
         player_hitbox = get_player_hitbox()
         vision_hitbox = self.get_hitbox()
@@ -239,10 +264,11 @@ class Slime:
 
         self.steps += 1
 
+    # Função para caso aconteça um toque entre a hitbox da visão com a parede, a slime mude de direção
     def change_direction(self):
         self.direction = random.choice(['up', 'down', 'left', 'right'])
-        print("mudando")
 
+    # Função para a Slime começar a percorrer o player, caso ele tenha entrago na hitbox de visão
     def berserk(self):
         global player_x, player_y
         dx = player_x - self.x
@@ -270,12 +296,14 @@ class Slime:
         elif self.direction == 'right':
             next_x += speed_slime
 
-        next_hitbox = pygame.Rect(next_x, next_y, self.get_hitbox().width, self.get_hitbox().height)
+        next_hitbox = pygame.Rect(
+            next_x, next_y, self.get_hitbox().width, self.get_hitbox().height)
         if not check_collision(next_hitbox, hitboxes_for_slime):
             self.x, self.y = next_x, next_y
         else:
             self.change_direction()
 
+    # Função para colocar a hitbox nas posições desejadas, de acordo com o lado que a slime olha
     def get_hitbox(self):
         if self.direction == 'up':
             return pygame.Rect(self.x + 8, self.y - 28, 16, 40)
@@ -286,11 +314,13 @@ class Slime:
         elif self.direction == 'right':
             return pygame.Rect(self.x + 23, self.y + 11, 40, 16)
 
+    # Função para implementar a slime na hitbox desejada, colocando ela bem no meio
     def get_body_hitbox(self):
         hitbox_width = 16
         hitbox_height = 16
         return pygame.Rect(self.x + (frame_x_slime - hitbox_width) // 2, self.y + (frame_y_slime - hitbox_height) // 2, hitbox_width, hitbox_height)
 
+    # Função para desenhar o slime na tela, dependendo se está vivo ou morto, a direção em que ele está se movendo, e se ele está em animação de morte
     def draw(self):
         if self.alive:
             if self.direction == 'up':
@@ -311,18 +341,28 @@ class Slime:
             else:
                 self.death_animation_playing = False
 
+    # Inicia a animação de morte da slime
     def play_death_animation(self):
         death_sound.play()
         self.death_animation_playing = True
         self.death_animation_start_time = pygame.time.get_ticks()
 
+# Coloca moedas em pontos pré-definidos
+
+
 def spawn_coin():
     spawn_point = random.choice(spawn_coin_points)
     coins.append(spawn_point)
 
+# Desenha as moedas do jogo
+
+
 def draw_coins():
     for coin in coins:
         tela.blit(moeda[current_frame % len(moeda)], coin)
+
+# Função para desenhar o player conforme as animações apropriadas a ele
+
 
 def draw_player(x, y, animation_frames):
     if current_frame < len(animation_frames):
@@ -330,21 +370,29 @@ def draw_player(x, y, animation_frames):
     else:
         tela.blit(animation_frames[0], (x, y))
 
+# Função para desenhar a slime conforme as animações apropriadas a ele
+
+
 def draw_slime(x, y, animation_frames):
     if current_frame < len(animation_frames):
         tela.blit(animation_frames[current_frame], (x, y))
     else:
         tela.blit(animation_frames[0], (x, y))
 
+# Função que calcula a área de colisão do jogador durante o jogo
+
+
 def get_player_hitbox():
     hitbox_width = 16
     hitbox_height = 16
     return pygame.Rect(player_x + 17, player_y + 24, hitbox_width, hitbox_height)
 
+# Desenha as hitboxes de player, slime e visão no mapa no jogo
+
+
 def draw_hitboxes(slimes):
     global player_alive, slime_alive
     player_hitbox = get_player_hitbox()
-
     pygame.draw.rect(tela, (255, 0, 0), player_hitbox, 2)
     for slime in slimes:
         if slime.alive:
@@ -353,12 +401,11 @@ def draw_hitboxes(slimes):
             pygame.draw.rect(tela, (0, 255, 0), vision_hitbox, 2)
             pygame.draw.rect(tela, (0, 0, 255), slime_body_hitbox, 2)
             if slime_body_hitbox.colliderect(player_hitbox):
-                print("Jogador foi pego pela slime!")
                 game_over()
+
 
 def is_player_behind_slime(slime):
     global player_x, player_y
-
     if slime.direction == 'up':
         return player_y > slime.y
     elif slime.direction == 'down':
@@ -367,6 +414,7 @@ def is_player_behind_slime(slime):
         return player_x > slime.x
     elif slime.direction == 'right':
         return player_x < slime.x
+
 
 def stats():
     global slime_deaths
@@ -384,6 +432,7 @@ def stats():
     tela.blit(time_text, time_rect)
     tela.blit(point_text, point_rect)
 
+
 def game_over():
     pygame.mixer.music.stop()
     gameOver.play()
@@ -394,7 +443,7 @@ def game_over():
     text_rect = text.get_rect(center=(larg_tela // 2, alt_tela // 2))
     text2 = font2.render("Tente novamente pressinando ESPAÇO", True, (255, 0, 0))
     text2_rect = text2.get_rect(center=(larg_tela // 2, alt_tela // 2 + 70))
-    mensagens = [("A sorte favorece os audazes..."), ("O homem é a slime do próprio homem..."), ("A força sem sabedoria rui pelo seu próprio peso..."), ("O homem está condenado a ser livre... A slime também..."), ("O conforto é o pior vício..."), ("Ao sem talento, obsessão...")]
+    mensagens = [("A sorte favorece os audazes..."), ("O homem é a slime do próprio homem..."), ("A força sem sabedoria rui pelo seu próprio peso..."),("O homem está condenado a ser livre... A slime também..."), ("O conforto é o pior vício..."), ("Ao sem talento, obsessão...")]
     msg = random.choice(mensagens)
     text3 = font3.render(msg, True, (255, 255, 255))
     text3_rect = text3.get_rect(center=(larg_tela // 2, alt_tela // 2 + 400))
@@ -402,6 +451,7 @@ def game_over():
     tela.blit(text2, text2_rect)
     tela.blit(text3, text3_rect)
     pygame.display.flip()
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -411,6 +461,7 @@ def game_over():
                 if event.key == pygame.K_SPACE:
                     reiniciar_jogo()
                     return
+
 
 def reiniciar_jogo():
     global temp_play, slime_deaths, player_x, player_y, slimes, coins, points
@@ -423,11 +474,13 @@ def reiniciar_jogo():
     slimes = []
     coins = []
 
+
+# Posição inicial do player
 last_direction = 'right'
 tela.blit(player_stand_right_frames[0], (player_x, player_y))
 pygame.display.flip()
 
-clock = pygame.time.Clock()
+# Listas de Spawns, moedas, slimes vivos e mortos
 slimes = []
 slimes_death = []
 spawn_coin_points = [(47, 45), (836, 50), (837, 375)]
@@ -436,7 +489,6 @@ spawn_points = [(35, 30), (830, 30), (830, 360)]
 last_slime_spawn_time = 0
 running = True
 while running:
-    tela.fill((0, 0, 0))
     hitboxes_for_player.clear()
     hitboxes_for_slime.clear()
     current_time = pygame.time.get_ticks()
@@ -566,10 +618,6 @@ while running:
     tela.blit(gram2, (210, 270))
     tela.blit(gram3, (310, 210))
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
     for coin in coins[:]:
         coin_rect = pygame.Rect(coin[0], coin[1], moeda_x, moeda_y)
         if player_hitbox.colliderect(coin_rect):
@@ -694,7 +742,7 @@ while running:
         new_slime = Slime(spawn_x, spawn_y)
         slimes.append(new_slime)
         last_slime_spawn_time = pygame.time.get_ticks()
-    
+
     stats()
     draw_hitboxes(slimes)
 
