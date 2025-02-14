@@ -387,13 +387,44 @@ def game_over():
     pygame.mixer.music.stop()
     gameOver.play()
     font = pygame.font.Font(font_path, 80)
+    font2 = pygame.font.Font(font_path, 20)
+    font3 = pygame.font.Font(font_path, 15)
     text = font.render('GAME OVER', True, (255, 0, 0))
     text_rect = text.get_rect(center=(larg_tela // 2, alt_tela // 2))
+    text2 = font2.render("Tente novamente pressinando ESPAÇO", True, (255, 0, 0))
+    text2_rect = text2.get_rect(center=(larg_tela // 2, alt_tela // 2 + 70))
+    mensagens = [("A sorte favorece os audazes..."), ("O homem é a slime do próprio homem..."), ("A força sem sabedoria rui pelo seu próprio peso..."), ("O homem está condenado a ser livre... A slime também..."), ("O conforto é o pior vício..."), ("Ao sem talento, obsessão...")]
+    msg = random.choice(mensagens)
+    text3 = font3.render(msg, True, (255, 255, 255))
+    text3_rect = text3.get_rect(center=(larg_tela // 2, alt_tela // 2 + 400))
     tela.blit(text, text_rect)
+    tela.blit(text2, text2_rect)
+    tela.blit(text3, text3_rect)
     pygame.display.flip()
-    pygame.time.wait(3000)
-    pygame.quit()
-    sys.exit()
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    reiniciar_jogo()
+                    return
+
+def reiniciar_jogo():
+    global temp_play, slime_deaths, player_x, player_y, slimes, coins, points
+    pygame.mixer.music.play(-1)
+    temp_play = pygame.time.get_ticks()
+    slime_deaths = 0
+    points = 0
+    player_x = 15
+    player_y = 810
+    slimes = []
+    coins = []
+
+last_direction = 'right'
+tela.blit(player_stand_right_frames[0], (player_x, player_y))
+pygame.display.flip()
 
 clock = pygame.time.Clock()
 slimes = []
