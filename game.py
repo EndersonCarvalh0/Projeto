@@ -26,8 +26,7 @@ gold = pygame.mixer.Sound(os.path.join(dir_msc, "Gold.wav"))
 gameOver = pygame.mixer.Sound(os.path.join(dir_msc, "GameOver.wav"))
 
 # Carrega a fonte usada no jogo
-font_path = (os.path.join(
-    dir_font, "G:/EstudoPython/Game/Game/font/PressStart2P-Regular.ttf"))
+font_path = (os.path.join(dir_font, "G:/EstudoPython/Game/Game/font/PressStart2P-Regular.ttf"))
 
 # Carrega as sprites e tiles usadas no mapa do jogo
 larg_tela = 900
@@ -68,8 +67,6 @@ moeda = pygame.image.load(os.path.join(dir_img, "moeda.png")).convert_alpha()
 map = Image.open("In game\map1.png")
 
 # Função para recortar as sprites
-
-
 def cut_sprite(sprite, frame_x, frame_y, num_frames, num_rows):
     animation = []
     for l in range(num_rows):
@@ -82,8 +79,6 @@ def cut_sprite(sprite, frame_x, frame_y, num_frames, num_rows):
     return animation
 
 # Função para caso a sprite precise ser corrida da direita para a esquerda
-
-
 def reverse_animation(frames):
     return frames[::-1]
 
@@ -348,22 +343,16 @@ class Slime:
         self.death_animation_start_time = pygame.time.get_ticks()
 
 # Coloca moedas em pontos pré-definidos
-
-
 def spawn_coin():
     spawn_point = random.choice(spawn_coin_points)
     coins.append(spawn_point)
 
 # Desenha as moedas do jogo
-
-
 def draw_coins():
     for coin in coins:
         tela.blit(moeda[current_frame % len(moeda)], coin)
 
 # Função para desenhar o player conforme as animações apropriadas a ele
-
-
 def draw_player(x, y, animation_frames):
     if current_frame < len(animation_frames):
         tela.blit(animation_frames[current_frame], (x, y))
@@ -371,8 +360,6 @@ def draw_player(x, y, animation_frames):
         tela.blit(animation_frames[0], (x, y))
 
 # Função para desenhar a slime conforme as animações apropriadas a ele
-
-
 def draw_slime(x, y, animation_frames):
     if current_frame < len(animation_frames):
         tela.blit(animation_frames[current_frame], (x, y))
@@ -380,16 +367,12 @@ def draw_slime(x, y, animation_frames):
         tela.blit(animation_frames[0], (x, y))
 
 # Função que calcula a área de colisão do jogador durante o jogo
-
-
 def get_player_hitbox():
     hitbox_width = 16
     hitbox_height = 16
     return pygame.Rect(player_x + 17, player_y + 24, hitbox_width, hitbox_height)
 
 # Desenha as hitboxes de player, slime e visão no mapa no jogo
-
-
 def draw_hitboxes(slimes):
     global player_alive, slime_alive
     player_hitbox = get_player_hitbox()
@@ -404,6 +387,7 @@ def draw_hitboxes(slimes):
                 game_over()
 
 
+#Função para identificar se o player está atrás da slime baseado na direção que a slime está enfrentando
 def is_player_behind_slime(slime):
     global player_x, player_y
     if slime.direction == 'up':
@@ -415,7 +399,7 @@ def is_player_behind_slime(slime):
     elif slime.direction == 'right':
         return player_x < slime.x
 
-
+#Função para exibir os status do jogador (Tempo, slimes mortas e pontos)
 def stats():
     global slime_deaths
     font = pygame.font.Font(font_path, 10)
@@ -432,7 +416,7 @@ def stats():
     tela.blit(time_text, time_rect)
     tela.blit(point_text, point_rect)
 
-
+#Função que Finaliza o jogo em caso de morte do player
 def game_over():
     pygame.mixer.music.stop()
     gameOver.play()
@@ -462,7 +446,7 @@ def game_over():
                     reiniciar_jogo()
                     return
 
-
+#função para zerar os status e posicionar o player na mesma posição novamente
 def reiniciar_jogo():
     global temp_play, slime_deaths, player_x, player_y, slimes, coins, points
     pygame.mixer.music.play(-1)
@@ -721,7 +705,6 @@ while running:
                 slime.x -= 1
 
         if is_player_behind_slime(slime) and slime.get_body_hitbox().colliderect(get_player_hitbox()):
-            print("Slime foi morta pelo jogador!")
             slime_deaths += 1
             points += 10
             slime.play_death_animation()
