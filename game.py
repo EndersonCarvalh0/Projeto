@@ -26,7 +26,7 @@ gold = pygame.mixer.Sound(os.path.join(dir_msc, "Gold.wav"))
 gameOver = pygame.mixer.Sound(os.path.join(dir_msc, "GameOver.wav"))
 
 # Carrega a fonte usada no jogo
-font_path = (os.path.join(dir_font, "G:/EstudoPython/Game/Game/font/PressStart2P-Regular.ttf"))
+font_path = (os.path.join(dir_font, "PressStart2P-Regular.ttf"))
 
 # Carrega as sprites e tiles usadas no mapa do jogo
 larg_tela = 900
