@@ -13,6 +13,7 @@ dir_pers = os.path.join(dir_princ, "Sprites")
 dir_font = os.path.join(dir_princ, "font")
 
 pygame.init()
+clock = pygame.time.Clock()
 temp_play = pygame.time.get_ticks()
 pygame.display.set_caption("Mata os Slimes, Cleitin!")
 
